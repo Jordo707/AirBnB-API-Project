@@ -47,24 +47,26 @@ router.post(
 
       const safeUser = {
         id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
         email: user.email,
         username: user.username,
-      };
+    };
 
-      await setTokenCookie(res, safeUser);
+    await setTokenCookie(res, safeUser);
 
-      return res.json({
+    return res.json({
         user: safeUser
-      });
-    }
-  );
+    });
+}
+);
 
 // Log out
 router.delete(
     '/',
     (_req, res) => {
-      res.clearCookie('token');
-      return res.json({ message: 'success' });
+        res.clearCookie('token');
+        return res.json({ message: 'success' });
     }
 );
 
@@ -72,15 +74,17 @@ router.delete(
 router.get(
     '/',
     (req, res) => {
-      const { user } = req;
-      if (user) {
-        const safeUser = {
-          id: user.id,
-          email: user.email,
-          username: user.username,
-        };
-        return res.json({
-          user: safeUser
+        const { user } = req;
+        if (user) {
+            const safeUser = {
+                id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                username: user.username,
+            };
+            return res.json({
+                user: safeUser
         });
       } else return res.json({ user: null });
     }
