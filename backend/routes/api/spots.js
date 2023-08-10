@@ -1,25 +1,56 @@
 const express = require('express');
 
-const { Spot, Booking, User, Review, ReviewImage } = require('../../db/models');
+const { Spot, Booking, User, Review, ReviewImage, SpotImage } = require('../../db/models');
 
 const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-const { Op } = require('sequelize')
+const { Sequelize, Op } = require('sequelize')
 
 // Create a spot
 router.post('/',
 
 async(req,res) => {
-    const user = req.user.id;
-    const { address, city, state, country, lat, lng, name,description,price} = req.body;
+  const user = req.user.id;
+  const { address, city, state, country, lat, lng, name,description,price} = req.body;
 
-    const newSpot = Spot.build({
-        ownerId:user, address, city, state, country, lat, lng, name, description ,price
-    })
+  const newSpot = Spot.build({
+    ownerId:user, address, city, state, country, lat, lng, name, description ,price
+  })
 
-    newSpot.validate()
+  // Ensure body validations
+  if(isNaN(req.body.lat) || req.body.lat>90 || req.body.lat<-90) {
+    res.status(400).json({error: `Latitude is not valid`})
+  }
+  if(isNaN(req.body.lng) || req.body.lng>180 || req.body.lng<-180) {
+    res.status(400).json({error: `Longitude is not valid`})
+  }
+  if(req.body.name.length > 50) {
+    res.status(400).json({error:`Name must be under 50 characters`})
+  }
+  if(isNaN(req.body.price) || req.body.price <= 0) {
+    res.status(400).json({error:`Price is not valid`})
+  }
+  if(!isNaN(req.body.address) || req.body.address.length === 0) {
+    res.status(400).json({error:`Address is invalid`})
+  }
+  if(!isNaN(req.body.city) || req.body.city.length === 0) {
+    res.status(400).json({error:`City is invalid`})
+  }
+  if(!isNaN(req.body.state) || req.body.state.length === 0) {
+    res.status(400).json({error:`State is invalid`})
+  }
+  if(!isNaN(req.body.country) || req.body.coutnry.length === 0) {
+    res.status(400).json({error:`Country is invalid`})
+  }
+  if(!isNaN(req.body.name) || req.body.name.length === 0) {
+    res.status(400).json({error:`Name is invalid`})
+  }
+  if(!isNaN(req.body.description) || req.body.description.length === 0) {
+    res.status(400).json({error:`Description is invalid`})
+  }
+
 
 	await newSpot.save()
 
@@ -27,6 +58,33 @@ async(req,res) => {
 })
 
 // Create an image for a spot
+router.post('/:id/images', async (req,res,next) => {
+  const spot = await Spot.findByPk(req.params.id);
+
+  // Ensure spot exists
+  if(!spot) {
+    res.status(404).json({error: `No spot found with id of ${req.params.id}`})
+  }
+
+  // Enusre current user is the owner of the spot
+  if(spot.ownerId !== req.user.id) {
+    res.status(403).json({error: `Only the spot owner may add an image`})
+  }
+
+  //create the image
+  const newSpotImage = await SpotImage.create({
+    spotId:req.params.id,
+    url:req.body.url,
+    preview:req.body.preview
+  })
+  res.status(201).json(
+    {
+      id: newSpotImage.id,
+      url: newSpotImage.url,
+      preview: newSpotImage.preview,
+    }
+  )
+})
 
 // Create a booking from a spot based on the spot id
 router.post('/:id/bookings', async (req, res, next) => {
@@ -91,7 +149,7 @@ router.post('/:id/bookings', async (req, res, next) => {
     }
 });
 
-// Get spots of current user --Done
+// Get spots of current user
 router.get('/current', async(req, res) => {
     const ownedSpots = await Spot.findAll({
         where: {
@@ -103,15 +161,87 @@ router.get('/current', async(req, res) => {
     res.json(ownedSpots)
 })
 
-// Get details of a spot by id --Done
+// Get details of a spot by id
 router.get('/:id', async(req,res) => {
-    const spot = await Spot.findByPk(req.params.id)
-    if(!spot) throw new Error(`no spot with id of ${req.params.id}`)
+    const spot = await Spot.findByPk(req.params.id, {
+      include: [
+        {
+          model: Review,
+          attributes:[
+            [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
+            [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgNumStars'],
+          ]
+        },
+        SpotImage
+      ],
+      group: ['Spot.id']
+    })
+    if(!spot) {
+      res.status(404).json({error:`No spot found with id of ${req.params.id}`})
+    }
 
     res.json(spot)
 })
 
 // Edit a spot
+router.put('/:id', async(req,res,next) => {
+  const spot = await Spot.findByPk(req.params.id);
+  if(!spot) {
+    res.status(404).json({error: `no spot found with id of ${req.params.id}`})
+  }
+
+  // Ensure only spot owner can edit
+  if(spot.ownerId !== req.user.id) {
+    res.status(403).json({error: `Only the spot owner is permited to edit this spot.`})
+  }
+
+  // Ensure body validations
+  if(isNaN(req.body.lat) || req.body.lat>90 || req.body.lat<-90) {
+    res.status(400).json({error: `Latitude is not valid`})
+  }
+  if(isNaN(req.body.lng) || req.body.lng>180 || req.body.lng<-180) {
+    res.status(400).json({error: `Longitude is not valid`})
+  }
+  if(req.body.name.length > 50) {
+    res.status(400).json({error:`Name must be under 50 characters`})
+  }
+  if(isNaN(req.body.price) || req.body.price <= 0) {
+    res.status(400).json({error:`Price is not valid`})
+  }
+  if(!isNaN(req.body.address) || req.body.address.length === 0) {
+    res.status(400).json({error:`Address is invalid`})
+  }
+  if(!isNaN(req.body.city) || req.body.city.length === 0) {
+    res.status(400).json({error:`City is invalid`})
+  }
+  if(!isNaN(req.body.state) || req.body.state.length === 0) {
+    res.status(400).json({error:`State is invalid`})
+  }
+  if(!isNaN(req.body.country) || req.body.coutnry.length === 0) {
+    res.status(400).json({error:`Country is invalid`})
+  }
+  if(!isNaN(req.body.name) || req.body.name.length === 0) {
+    res.status(400).json({error:`Name is invalid`})
+  }
+  if(!isNaN(req.body.description) || req.body.description.length === 0) {
+    res.status(400).json({error:`Description is invalid`})
+  }
+
+  // Update the spot
+  await spot.update({
+    address:req.body.address,
+    city:req.body.city,
+    state:req.body.state,
+    coutnry:req.body.country,
+    lat:req.body.lat,
+    lng:req.body.lng,
+    name:req.body.name,
+    description:req.body.description,
+    price:req.body.price
+  })
+
+  res.status(200).json(spot)
+})
 
 
 // Get all bookings for a spot based on the spot id
@@ -150,7 +280,6 @@ router.get('/:id/bookings', async(req,res,next) => {
     res.json(filteredBookings);
 })
 
-// Delete a spot image
 
 // Create a review for a spot
 router.post('/:id/reviews', async(req,res,next) => {

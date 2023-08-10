@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { Review, ReviewImage, User, Spot } = require('../../db/models')
+const { Review, ReviewImage, User, Spot, SpotImage } = require('../../db/models')
 
 const { Op } = require('sequelize');
 
@@ -40,23 +40,91 @@ router.post('/:id/images', async(req, res, next) => {
 // Get all the reviews from the current user
 router.get('/current', async(req, res, next) => {
     const userReviews = await Review.findAll({
-        where:{
-            userId:req.user.id
+        where: {
+          userId: req.user.id,
         },
-        include: [{
-            model:User,
-            attributes:['id','firstName','lastName']
-        }, {
-            model:Spot,
-            attributes:['id',
-                'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name',
-                'price']
-        }, {
-            model:ReviewImage,
-            attributes:['id','url']
-        }]
-    })
-    res.status(200).json(userReviews)
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'firstName', 'lastName'],
+          },
+          {
+            model: Spot,
+            attributes: [
+              'id',
+              'ownerId',
+              'address',
+              'city',
+              'state',
+              'country',
+              'lat',
+              'lng',
+              'name',
+              'price',
+            ],
+            include: [
+              {
+                model: SpotImage,
+                attributes: ['url'],
+                where: {
+                  preview: true,
+                },
+                required: false,
+              },
+            ],
+          },
+          {
+            model: ReviewImage,
+            attributes: ['id', 'url'],
+          },
+        ],
+      });
+
+      const formattedReviews = userReviews.map((review) => {
+        const { id, review: reviewText, stars, createdAt, updatedAt, User, Spot } = review;
+
+        const spotData = {
+          id: Spot.id,
+          ownerId: Spot.ownerId,
+          address: Spot.address,
+          city: Spot.city,
+          state: Spot.state,
+          country: Spot.country,
+          lat: Spot.lat,
+          lng: Spot.lng,
+          name: Spot.name,
+          price: Spot.price,
+        };
+
+        const user = {
+          id: User.id,
+          firstName: User.firstName,
+          lastName: User.lastName,
+        };
+
+        const reviewImages = review.ReviewImages.map((image) => ({
+          id: image.id,
+          url: image.url,
+        }));
+
+        const spotImage = Spot.SpotImages[0] ? Spot.SpotImages[0].url : null;
+
+        return {
+          id,
+          review: reviewText,
+          stars,
+          createdAt,
+          updatedAt,
+          User: user,
+          Spot: spotData,
+          ReviewImages: reviewImages,
+          previewImage: spotImage,
+        };
+      });
+
+      res.status(200).json(formattedReviews);
+
+
 })
 
 // Edit a review
