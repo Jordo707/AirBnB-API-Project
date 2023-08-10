@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { Spot, Booking, User } = require('../../db/models');
+const { Spot, Booking, User, Review, ReviewImage } = require('../../db/models');
 
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -151,6 +151,73 @@ router.get('/:id/bookings', async(req,res,next) => {
 })
 
 // Delete a spot image
+
+// Create a review for a spot
+router.post('/:id/reviews', async(req,res,next) => {
+
+  // get spot
+  const spot = await Spot.findByPk(req.params.id);
+  if(!spot) {
+    return res.status(404).json({ error: `No spot with id of ${req.params.id} found`})
+  }
+
+  // check for previous review of spot by user
+  const userReview = await Review.findOne({
+    where:{
+      userId:req.user.id,
+      spotId:req.params.id
+    }
+  })
+  if(userReview) {
+    return res.status(403).json({ error: `You have already left a review for this spot.`})
+  }
+
+  // ensure review and stars body components are valid
+  if(req.body.stars > 5 || req.body.stars < 1 || isNaN(req.body.stars) || req.body.stars === null) {
+    return res.status(400).json({ error: `Star rating must be between 1 and 5`})
+  }
+  if(!req.body.review || typeof req.body.review !== 'string' || req.body.review.trim().length === 0) {
+    return res.status(400).json({ error: `Review must not be blank`})
+  }
+
+  // create new review
+  const newReview = await Review.create({
+    userId:req.user.id,
+    spotId:req.params.id,
+    review:req.body.review,
+    stars:req.body.stars
+  })
+
+  return res.status(201).json(newReview)
+
+})
+
+// Get reviews of a spot based on spotId
+router.get('/:id/reviews', async(req,res,next) => {
+  const spot = await Spot.findByPk(req.params.id)
+
+  if(!spot) {
+    res.status(404).json({ error: `No spot found with id of ${req.params.id}`})
+  }
+
+  const reviews = await Review.findAll({
+      where:{
+        spotId: req.params.id
+      },
+      include: [
+        {
+          model:User,
+          attributes:['id','firstName','lastName']
+        },
+        {
+          model:ReviewImage,
+          attributes:['id','url']
+        }
+      ]
+  })
+
+  res.status(200).json(reviews)
+})
 
 // Get all spots --Done
 router.get('/', async(req,res) => {
