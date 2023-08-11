@@ -163,24 +163,30 @@ router.get('/current', async(req, res) => {
 
 // Get details of a spot by id
 router.get('/:id', async(req,res) => {
-    const spot = await Spot.findByPk(req.params.id, {
-      include: [
-        {
-          model: Review,
-          attributes:[
-            [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
-            [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgNumStars'],
-          ]
-        },
-        SpotImage
-      ],
-      group: ['Spot.id','Reviews.id']
-    })
-    if(!spot) {
-      res.status(404).json({error:`No spot found with id of ${req.params.id}`})
-    }
+  const spot = await Spot.findByPk(req.params.id, {
+    include: [
+      {
+        model: Review,
+        attributes:[
+          [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
+          [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgNumStars'],
+        ]
+      },
+      {
+        model: SpotImage
+      }
+    ],
+    group: [
+      'Spot.id',
+      'Reviews.id',
+      'SpotImages.id'
+    ]
+  })
+  if(!spot) {
+    res.status(404).json({error:`No spot found with id of ${req.params.id}`})
+  }
 
-    res.json(spot)
+  res.json(spot)
 })
 
 // Edit a spot
