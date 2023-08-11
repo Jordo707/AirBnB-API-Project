@@ -348,12 +348,67 @@ router.get('/:id/reviews', async(req,res,next) => {
   res.status(200).json(reviews)
 })
 
-// Get all spots --Done
+// Get all spots
 router.get('/', async(req,res) => {
-    const spots = await Spot.findAll({
-        order:[['id']]
-    })
-    res.json(spots)
+  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  // Validate query parameters
+  if (
+    isNaN(page) || isNaN(size) ||
+    page < 1 || page > 10 ||
+    size < 1 || size > 20 ||
+    (minLat && isNaN(minLat)) ||
+    (maxLat && isNaN(maxLat)) ||
+    (minLng && isNaN(minLng)) ||
+    (maxLng && isNaN(maxLng)) ||
+    (minPrice && isNaN(minPrice)) ||
+    (maxPrice && isNaN(maxPrice))
+  ) {
+    res.status(400).json({ error: 'Invalid query parameters' });
+    return;
+  }
+
+  // Build filters based on query parameters
+  const filters = {};
+  if (minLat || maxLat) {
+    filters.lat = {};
+    if (minLat) filters.lat[Op.gte] = minLat;
+    if (maxLat) filters.lat[Op.lte] = maxLat;
+  }
+  if (minLng || maxLng) {
+    filters.lng = {};
+    if (minLng) filters.lng[Op.gte] = minLng;
+    if (maxLng) filters.lng[Op.lte] = maxLng;
+  }
+  if (minPrice || maxPrice) {
+    filters.price = {};
+    if (minPrice) filters.price[Op.gte] = minPrice;
+    if (maxPrice) filters.price[Op.lte] = maxPrice;
+  }
+
+  // Apply querry filters
+  const spots = await Spot.findAll({
+    where: filters,
+    order: [['id']],
+    limit: +size,
+    offset: (+page - 1) * +size,
+    attributes: [
+      'id', 'ownerId', 'address', 'city', 'state', 'country',
+      'lat', 'lng', 'name', 'description', 'price',
+      'createdAt', 'updatedAt'
+    ],
+    include: [
+      {
+        model: SpotImage,
+        attributes: ['url'],
+        where: {
+          preview: true
+        },
+        required: false // Allow spots without preview images
+      }
+    ]
+  });
+  res.json(spots);
 })
 
 module.exports = router;
