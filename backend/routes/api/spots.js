@@ -9,52 +9,67 @@ const router = express.Router();
 const { Sequelize, Op } = require('sequelize')
 
 // Create a spot
-router.post('/',
-
-async(req,res) => {
+router.post('/',async(req,res) => {
   const user = req.user.id;
-  const { address, city, state, country, lat, lng, name,description,price} = req.body;
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
-  const newSpot = Spot.build({
-    ownerId:user, address, city, state, country, lat, lng, name, description ,price
-  })
-
-  // Ensure body validations
-  if(isNaN(req.body.lat) || req.body.lat>90 || req.body.lat<-90) {
-    res.status(400).json({error: `Latitude is not valid`})
-  }
-  if(isNaN(req.body.lng) || req.body.lng>180 || req.body.lng<-180) {
-    res.status(400).json({error: `Longitude is not valid`})
-  }
-  if(req.body.name.length > 50) {
-    res.status(400).json({error:`Name must be under 50 characters`})
-  }
-  if(isNaN(req.body.price) || req.body.price <= 0) {
-    res.status(400).json({error:`Price is not valid`})
-  }
-  if(!isNaN(req.body.address) || req.body.address.length === 0) {
-    res.status(400).json({error:`Address is invalid`})
-  }
-  if(!isNaN(req.body.city) || req.body.city.length === 0) {
-    res.status(400).json({error:`City is invalid`})
-  }
-  if(!isNaN(req.body.state) || req.body.state.length === 0) {
-    res.status(400).json({error:`State is invalid`})
-  }
-  if(!isNaN(req.body.country) || req.body.coutnry.length === 0) {
-    res.status(400).json({error:`Country is invalid`})
-  }
-  if(!isNaN(req.body.name) || req.body.name.length === 0) {
-    res.status(400).json({error:`Name is invalid`})
-  }
-  if(!isNaN(req.body.description) || req.body.description.length === 0) {
-    res.status(400).json({error:`Description is invalid`})
+  if (isNaN(req.body.lat) || req.body.lat > 90 || req.body.lat < -90) {
+    res.status(400).json({ error: `Latitude is not valid` });
+    return;
   }
 
+  if (isNaN(req.body.lng) || req.body.lng > 180 || req.body.lng < -180) {
+    res.status(400).json({ error: `Longitude is not valid` });
+    return;
+  }
 
-	await newSpot.save()
+  if (name.length > 50) {
+    res.status(400).json({ error: `Name must be under 50 characters` });
+    return;
+  }
 
-	res.json(newSpot)
+  if (isNaN(price) || price <= 0) {
+    res.status(400).json({ error: `Price is not valid` });
+    return;
+  }
+
+  if (typeof address !== 'string' || address.length === 0) {
+    res.status(400).json({ error: `Address is invalid` });
+    return;
+  }
+
+  if (typeof city !== 'string' || city.length === 0) {
+    res.status(400).json({ error: `City is invalid` });
+    return;
+  }
+
+  if (typeof state !== 'string' || state.length === 0) {
+    res.status(400).json({ error: `State is invalid` });
+    return;
+  }
+
+  if (typeof country !== 'string' || country.length === 0) {
+    res.status(400).json({ error: `Country is invalid` });
+    return;
+  }
+
+  if (typeof name !== 'string' || name.length === 0) {
+    res.status(400).json({ error: `Name is invalid` });
+    return;
+  }
+
+  if (typeof description !== 'string' || description.length === 0) {
+    res.status(400).json({ error: `Description is invalid` });
+    return;
+  }
+
+  const newSpot = await Spot.build({
+    ownerId: user, address, city, state, country, lat, lng, name, description, price
+  });
+
+  await newSpot.save();
+
+  res.json(newSpot);
 })
 
 // Create an image for a spot
