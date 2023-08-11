@@ -167,37 +167,38 @@ router.get('/:id', async(req,res) => {
     attributes: [
       'id', 'ownerId', 'address', 'city', 'state', 'country',
       'lat', 'lng', 'name', 'description', 'price',
-      'createdAt', 'updatedAt'
+      'createdAt', 'updatedAt',
+      [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgNumStars'],
+      [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews']
     ],
     include: [
       {
         model: Review,
-        attributes:[
-          [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews'],
-          [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgNumStars'],
-        ]
+        attributes: [],
+        where: {
+          spotId: Sequelize.col('Spot.id')
+        }
       },
       {
         model: SpotImage
       }
     ],
     group: [
-      'Spot.id',
-      'Reviews.id',
-      'SpotImages.id'
+      'Spot.id', // Include the primary key of the Spot table
+      'SpotImages.id' // Include the primary key of the SpotImage table
     ]
-  })
+  });
+
   if(!spot) {
-    res.status(404).json({error:`No spot found with id of ${req.params.id}`})
+    res.status(404).json({error:`No spot found with id of ${req.params.id}`});
+    return;
   }
 
   const responseSpot = {
     ...spot.toJSON(),
-    numReviews: spot.Reviews[0]?.dataValues.numReviews || 0,
-    avgNumStars: spot.Reviews[0]?.dataValues.avgNumStars || 0
+    numReviews: +spot.dataValues.numReviews || 0,
+    avgNumStars: +spot.dataValues.avgNumStars || 0
   };
-
-  delete responseSpot.Reviews;
 
   res.json(responseSpot);
 })
