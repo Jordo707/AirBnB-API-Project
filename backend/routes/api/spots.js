@@ -172,16 +172,8 @@ router.get('/:id', async(req, res) => {
     include: [
       {
         model: SpotImage
-      },
-      {
-        model: Review,
-        attributes: [],
-        where: {
-          spotId: Sequelize.col('Spot.id')
-        }
       }
-    ],
-    subQuery: false // Disable subqueries for better compatibility
+    ]
   });
 
   if (!spot) {
@@ -189,7 +181,7 @@ router.get('/:id', async(req, res) => {
     return;
   }
 
-  const avgStarsResult = await Review.findOne({
+  const reviewInfo = await Review.findOne({
     attributes: [
       [Sequelize.fn('AVG', Sequelize.col('stars')), 'avgNumStars'],
       [Sequelize.fn('COUNT', Sequelize.col('id')), 'numReviews']
@@ -201,8 +193,8 @@ router.get('/:id', async(req, res) => {
 
   const responseSpot = {
     ...spot.toJSON(),
-    numReviews: avgStarsResult.dataValues.numReviews,
-    avgNumStars: avgStarsResult.dataValues.avgNumStars
+    numReviews: reviewInfo.dataValues.numReviews,
+    avgNumStars: reviewInfo.dataValues.avgNumStars
   };
 
   res.json(responseSpot);
