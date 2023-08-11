@@ -78,7 +78,7 @@ router.post('/:id/images', async (req,res,next) => {
 
   // Ensure spot exists
   if(!spot) {
-    res.status(404).json({error: `No spot found with id of ${req.params.id}`})
+    res.status(404).json({message: `Spot couldn't be found`})
   }
 
   // Enusre current user is the owner of the spot
@@ -108,7 +108,7 @@ router.post('/:id/images', async (req,res,next) => {
       const spot = await Spot.findByPk(spotId);
 
       if (!spot) {
-        res.status(404).json({ error: `Could not find spot with id ${spotId}` });
+        res.status(404).json({ message: `Spot couldn't be found` });
         return;
       }
 
@@ -145,7 +145,7 @@ router.post('/:id/images', async (req,res,next) => {
       });
 
       if (overlappingBooking) {
-        res.status(403).json({ error: 'A booking already exists for the specified dates.' });
+        res.status(403).json({ message: 'Sorry, this spot is already booked for the specified dates' });
         return;
       }
 
@@ -196,7 +196,7 @@ router.post('/:id/images', async (req,res,next) => {
   });
 
   if (!spot) {
-    res.status(404).json({ error: `No spot found with id of ${req.params.id}` });
+    res.status(404).json({ message:`Spot couldn't be found` });
     return;
   }
 
@@ -224,7 +224,7 @@ router.post('/:id/images', async (req,res,next) => {
 router.put('/:id', async(req,res,next) => {
   const spot = await Spot.findByPk(req.params.id);
   if(!spot) {
-    res.status(404).json({error: `no spot found with id of ${req.params.id}`})
+    res.status(404).json({message: `Spot couldn't be found`})
   }
 
   // Ensure only spot owner can edit
@@ -345,7 +345,7 @@ router.post('/:id/reviews', async(req,res,next) => {
   // get spot
   const spot = await Spot.findByPk(req.params.id);
   if(!spot) {
-    return res.status(404).json({ error: `No spot with id of ${req.params.id} found`})
+    return res.status(404).json({ message: `Spot couldn't be found`})
   }
 
   // check for previous review of spot by user
@@ -356,7 +356,7 @@ router.post('/:id/reviews', async(req,res,next) => {
     }
   })
   if(userReview) {
-    return res.status(403).json({ error: `You have already left a review for this spot.`})
+    return res.status(403).json({ message: `User has already left a review for this spot.`})
   }
 
   // ensure review and stars body components are valid
@@ -384,7 +384,7 @@ router.get('/:id/reviews', async(req,res,next) => {
   const spot = await Spot.findByPk(req.params.id)
 
   if(!spot) {
-    res.status(404).json({ error: `No spot found with id of ${req.params.id}`})
+    res.status(404).json({ message: `Spot couldn't be found`})
   }
 
   const reviews = await Review.findAll({
@@ -486,7 +486,7 @@ router.delete('/:id', async(req,res,next) => {
 
   // Ensure spot exists
   if(!doomedSpot) {
-    res.status(404).json({error:`No spot found with Id of ${req.params.id}`})
+    res.status(404).json({message:`Spot couldn't be found`})
   }
 
   // Ensure only spot owner can delete
@@ -496,7 +496,7 @@ router.delete('/:id', async(req,res,next) => {
 
   // Destroy the spot
   await doomedSpot.destroy();
-  res.status(200).json({message:`Successfully deleted spot with id of ${req.params.id}`})
+  res.status(200).json({message:`Successfully deleted`})
 
 })
 

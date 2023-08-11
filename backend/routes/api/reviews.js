@@ -12,7 +12,7 @@ router.post('/:id/images', async(req, res, next) => {
     const review = await Review.findByPk(req.params.id);
 
     if(!review) {
-        res.status(404).json({ error: `No review exists with id of ${req.params.id}`})
+        res.status(404).json({ message: `Review couldn't be found`})
     }
 
     // Ensure the current user is the review owner
@@ -27,7 +27,7 @@ router.post('/:id/images', async(req, res, next) => {
         }
     })
     if(reviewImages.length >= 10) {
-        res.status(403).json({error: `Maximum number of images reached for this review`})
+        res.status(403).json({error: `Maximum number of images for this resource was reached`})
     }
 
     const newReviewImage = await ReviewImage.create({
@@ -133,7 +133,7 @@ router.put('/:id', async(req,res,next) => {
 
     // ensure review exists
     if(!review) {
-        res.status(404).json({error:`No review found with id of ${req.params.id}`})
+        res.status(404).json({message:`Review couldn't be found`})
     }
 
     // Ensure only the owner can edit
@@ -163,13 +163,13 @@ router.delete('/:id', async(req,res,next) => {
     // Find the review
     const doomedReview = await Review.findByPk(req.params.id)
     if(!doomedReview) {
-        return res.status(404).json({ error:`No review exists with id of ${req.params.id}`})
+        return res.status(404).json({ message:`Review couldn't be found`})
     }
     if(doomedReview.userId !== req.user.id) {
         throw new Error(`only the review owner may delete this review.`)
     }
     await doomedReview.destroy()
-    res.status(200).json({ message:`Successfully deleted review with id of ${req.params.id}`})
+    res.status(200).json({ message:`Successfully deleted`})
 })
 
 module.exports = router;

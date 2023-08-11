@@ -19,13 +19,12 @@ router.delete('/:id', async(req, res, next) => {
             // Ensure current date is not after booking start date
             if(currentDate < bookingStartDate) {
                 await doomedBooking.destroy()
-                res.status(200).json({message:`Successfully deleted booking with id of ${req.params.id}`})
+                res.status(200).json({message:`Successfully deleted`})
             } else {
-                res.status(400)
-                throw new Error(`Booking start date has passed, cannot delete.`)
+                res.status(400).json({message:`Bookings that have started can't be deleted`})
             }
         } else {
-            throw new Error(`Only the booking owner or spot owner may delete a booking`)
+            res.status(403).json({message:`Only the booking owner or spot owner may delete a booking`})
         }
 
     } else {
@@ -56,7 +55,7 @@ router.put('/:id', async(req,res) =>{
       });
 
       if (!booking) {
-        return res.status(404).json({ error: `No booking found with id ${req.params.id}` });
+        return res.status(404).json({ message: `Booking couldn't be found` });
       }
 
       if (booking.User.id !== req.user.id) {
@@ -76,7 +75,7 @@ router.put('/:id', async(req,res) =>{
       }
 
       if (currentDate > bookingEndDate) {
-        return res.status(400).json({ error: 'Cannot edit a booking that has already ended.' });
+        return res.status(400).json({ message: `Past bookings cannot be modified`});
       }
 
       const overlappingBooking = await Booking.findOne({
@@ -95,7 +94,7 @@ router.put('/:id', async(req,res) =>{
       });
 
       if (overlappingBooking) {
-        return res.status(403).json({ error: 'A booking already exists in this spot for the specified dates.' });
+        return res.status(403).json({ message: `Sorry, this spot is already booked for the specified dates`});
       }
 
       await booking.update({

@@ -10,7 +10,7 @@ const router = express.Router()
 router.delete('/:id', async(req,res,next) => {
     const doomedImage = await ReviewImage.findByPk(req.params.id);
     if(!doomedImage) {
-        res.status(404).json({error:`No review image exists with id of ${req.params.id}`})
+        res.status(404).json({message:`Review image couldn't be found`})
     }
     const review = await Review.findByPk(doomedImage.reviewId)
 
@@ -21,7 +21,7 @@ router.delete('/:id', async(req,res,next) => {
 
     // Delete the image
     await doomedImage.destroy();
-    res.status(200).json({message:`Successfully deleted review image with id of ${req.params.id}`})
+    res.status(200).json({message:`Successfully deleted`})
 })
 
 

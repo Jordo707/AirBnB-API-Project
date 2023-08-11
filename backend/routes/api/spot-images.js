@@ -14,7 +14,7 @@ router.delete('/:id', async(req,res,next) => {
 
     // Ensure image exists
     if(!spotImage) {
-        res.status(404).json({error: `No spot image found with id of ${req.params.id}`})
+        res.status(404).json({message: `Spot image couldn't be found`})
     }
 
     // Ensure only the spot owner can delete
@@ -24,7 +24,7 @@ router.delete('/:id', async(req,res,next) => {
     }
     // Destroy the spotImage
     await spotImage.destroy();
-    res.status(200).json({message:`Successfully deleted spot image with id of ${req.params.id}`})
+    res.status(200).json({message:`Successfully deleted`})
 })
 
 
