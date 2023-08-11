@@ -162,46 +162,51 @@ router.get('/current', async(req, res) => {
 })
 
 // Get details of a spot by id
-router.get('/:id', async(req,res) => {
+router.get('/:id', async(req, res) => {
   const spot = await Spot.findByPk(req.params.id, {
     attributes: [
       'id', 'ownerId', 'address', 'city', 'state', 'country',
       'lat', 'lng', 'name', 'description', 'price',
-      'createdAt', 'updatedAt',
-      [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgNumStars'],
-      [Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numReviews']
+      'createdAt', 'updatedAt'
     ],
     include: [
+      {
+        model: SpotImage
+      },
       {
         model: Review,
         attributes: [],
         where: {
           spotId: Sequelize.col('Spot.id')
         }
-      },
-      {
-        model: SpotImage
       }
     ],
-    group: [
-      'Spot.id', // Include the primary key of the Spot table
-      'SpotImages.id' // Include the primary key of the SpotImage table
-    ]
+    subQuery: false // Disable subqueries for better compatibility
   });
 
-  if(!spot) {
-    res.status(404).json({error:`No spot found with id of ${req.params.id}`});
+  if (!spot) {
+    res.status(404).json({ error: `No spot found with id of ${req.params.id}` });
     return;
   }
 
+  const avgStarsResult = await Review.findOne({
+    attributes: [
+      [Sequelize.fn('AVG', Sequelize.col('stars')), 'avgNumStars'],
+      [Sequelize.fn('COUNT', Sequelize.col('id')), 'numReviews']
+    ],
+    where: {
+      spotId: spot.id
+    }
+  });
+
   const responseSpot = {
     ...spot.toJSON(),
-    numReviews: +spot.dataValues.numReviews || 0,
-    avgNumStars: +spot.dataValues.avgNumStars || 0
+    numReviews: avgStarsResult.dataValues.numReviews,
+    avgNumStars: avgStarsResult.dataValues.avgNumStars
   };
 
   res.json(responseSpot);
-})
+});
 
 // Edit a spot
 router.put('/:id', async(req,res,next) => {
