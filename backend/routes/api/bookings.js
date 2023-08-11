@@ -19,7 +19,7 @@ router.delete('/:id', async(req, res, next) => {
             // Ensure current date is not after booking start date
             if(currentDate < bookingStartDate) {
                 await doomedBooking.destroy()
-                res.status(204)
+                res.status(200).json({message:`Successfully deleted booking with id of ${req.params.id}`})
             } else {
                 res.status(400)
                 throw new Error(`Booking start date has passed, cannot delete.`)
@@ -65,6 +65,15 @@ router.put('/:id', async(req,res) =>{
 
       const currentDate = new Date();
       const bookingEndDate = new Date(booking.endDate);
+
+      const newStartDate = new Date(req.body.startDate);
+      const newEndDate = new Date(req.body.endDate);
+
+      // Check if the booking end date is before the start date
+      if (newEndDate < newStartDate) {
+        res.status(400).json({ error: 'Booking end date cannot be before the start date.' });
+        return;
+      }
 
       if (currentDate > bookingEndDate) {
         return res.status(400).json({ error: 'Cannot edit a booking that has already ended.' });

@@ -69,7 +69,7 @@ router.post('/',async(req,res) => {
 
   await newSpot.save();
 
-  res.json(newSpot);
+  res.status(201).json(newSpot);
 })
 
 // Create an image for a spot
@@ -98,11 +98,11 @@ router.post('/:id/images', async (req,res,next) => {
       url: newSpotImage.url,
       preview: newSpotImage.preview,
     }
-  )
-})
+    )
+  })
 
-// Create a booking from a spot based on the spot id
-router.post('/:id/bookings', async (req, res, next) => {
+  // Create a booking from a spot based on the spot id
+  router.post('/:id/bookings', async (req, res, next) => {
     try {
       const spotId = req.params.id;
       const spot = await Spot.findByPk(spotId);
@@ -162,31 +162,35 @@ router.post('/:id/bookings', async (req, res, next) => {
       console.error('Error creating booking:', error);
       res.status(500).json({ error: 'An error occurred while creating the booking.' });
     }
-});
+  });
 
-// Get spots of current user
-router.get('/current', async(req, res) => {
+  // Get spots of current user
+  router.get('/current', async(req, res) => {
     const ownedSpots = await Spot.findAll({
-        where: {
-            ownerId:req.user.id
-        }
+      where: {
+        ownerId:req.user.id
+      }
     })
 
 
     res.json(ownedSpots)
-})
+  })
 
-// Get details of a spot by id
-router.get('/:id', async(req, res) => {
-  const spot = await Spot.findByPk(req.params.id, {
-    attributes: [
-      'id', 'ownerId', 'address', 'city', 'state', 'country',
+  // Get details of a spot by id
+  router.get('/:id', async(req, res) => {
+    const spot = await Spot.findByPk(req.params.id, {
+      attributes: [
+        'id', 'ownerId', 'address', 'city', 'state', 'country',
       'lat', 'lng', 'name', 'description', 'price',
       'createdAt', 'updatedAt'
     ],
     include: [
       {
         model: SpotImage
+      },
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName']
       }
     ]
   });
@@ -215,6 +219,7 @@ router.get('/:id', async(req, res) => {
   res.json(responseSpot);
 });
 
+
 // Edit a spot
 router.put('/:id', async(req,res,next) => {
   const spot = await Spot.findByPk(req.params.id);
@@ -227,36 +232,57 @@ router.put('/:id', async(req,res,next) => {
     res.status(403).json({error: `Only the spot owner is permited to edit this spot.`})
   }
 
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+
   // Ensure body validations
-  if(isNaN(req.body.lat) || req.body.lat>90 || req.body.lat<-90) {
-    res.status(400).json({error: `Latitude is not valid`})
+  if (isNaN(lat) || lat > 90 || lat < -90) {
+    res.status(400).json({ error: `Latitude is not valid` });
+    return;
   }
-  if(isNaN(req.body.lng) || req.body.lng>180 || req.body.lng<-180) {
-    res.status(400).json({error: `Longitude is not valid`})
+
+  if (isNaN(lng) || lng > 180 || lng < -180) {
+    res.status(400).json({ error: `Longitude is not valid` });
+    return;
   }
-  if(req.body.name.length > 50) {
-    res.status(400).json({error:`Name must be under 50 characters`})
+
+  if (name.length > 50) {
+    res.status(400).json({ error: `Name must be under 50 characters` });
+    return;
   }
-  if(isNaN(req.body.price) || req.body.price <= 0) {
-    res.status(400).json({error:`Price is not valid`})
+
+  if (isNaN(price) || price <= 0) {
+    res.status(400).json({ error: `Price is not valid` });
+    return;
   }
-  if(!isNaN(req.body.address) || req.body.address.length === 0) {
-    res.status(400).json({error:`Address is invalid`})
+
+  if (typeof address !== 'string' || address.length === 0) {
+    res.status(400).json({ error: `Address is invalid` });
+    return;
   }
-  if(!isNaN(req.body.city) || req.body.city.length === 0) {
-    res.status(400).json({error:`City is invalid`})
+
+  if (typeof city !== 'string' || city.length === 0) {
+    res.status(400).json({ error: `City is invalid` });
+    return;
   }
-  if(!isNaN(req.body.state) || req.body.state.length === 0) {
-    res.status(400).json({error:`State is invalid`})
+
+  if (typeof state !== 'string' || state.length === 0) {
+    res.status(400).json({ error: `State is invalid` });
+    return;
   }
-  if(!isNaN(req.body.country) || req.body.coutnry.length === 0) {
-    res.status(400).json({error:`Country is invalid`})
+
+  if (typeof country !== 'string' || country.length === 0) {
+    res.status(400).json({ error: `Country is invalid` });
+    return;
   }
-  if(!isNaN(req.body.name) || req.body.name.length === 0) {
-    res.status(400).json({error:`Name is invalid`})
+
+  if (typeof name !== 'string' || name.length === 0) {
+    res.status(400).json({ error: `Name is invalid` });
+    return;
   }
-  if(!isNaN(req.body.description) || req.body.description.length === 0) {
-    res.status(400).json({error:`Description is invalid`})
+
+  if (typeof description !== 'string' || description.length === 0) {
+    res.status(400).json({ error: `Description is invalid` });
+    return;
   }
 
   // Update the spot
@@ -264,7 +290,7 @@ router.put('/:id', async(req,res,next) => {
     address:req.body.address,
     city:req.body.city,
     state:req.body.state,
-    coutnry:req.body.country,
+    country:req.body.country,
     lat:req.body.lat,
     lng:req.body.lng,
     name:req.body.name,
@@ -278,36 +304,36 @@ router.put('/:id', async(req,res,next) => {
 
 // Get all bookings for a spot based on the spot id
 router.get('/:id/bookings', async(req,res,next) => {
-    const spotBookings = await Booking.findAll({
-        where: {
-            spotId:req.params.id
-        },
-        include: [
-            {
-                model:Spot,
-                attributes:['ownerId']
-            },
-            {
-                model: User,
-                attributes: ['id', 'firstName', 'lastName'],
-            },
-        ],
-    });
+  const spotBookings = await Booking.findAll({
+    where: {
+      spotId:req.params.id
+    },
+    include: [
+      {
+        model:Spot,
+        attributes:['ownerId']
+      },
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+    ],
+  });
 
-    if (!spotBookings || spotBookings.length === 0) {
-        return res.status(404).json({ error: `No bookings found for spot with id ${req.params.id}` });
+  if (!spotBookings || spotBookings.length === 0) {
+    return res.status(404).json({ error: `No bookings found for spot with id ${req.params.id}` });
+  }
+
+  const isSpotOwner = spotBookings[0].Spot.ownerId === req.user.id;
+
+  const filteredBookings = spotBookings.map((booking) => {
+    if (isSpotOwner) {
+      return booking;
+    } else {
+      const { spotId, startDate, endDate } = booking;
+      return { spotId, startDate, endDate };
     }
-
-    const isSpotOwner = spotBookings[0].Spot.ownerId === req.user.id;
-
-    const filteredBookings = spotBookings.map((booking) => {
-      if (isSpotOwner) {
-        return booking;
-      } else {
-        const { spotId, startDate, endDate } = booking;
-        return { spotId, startDate, endDate };
-      }
-    });
+  });
 
     res.json(filteredBookings);
 })
@@ -362,51 +388,51 @@ router.get('/:id/reviews', async(req,res,next) => {
   }
 
   const reviews = await Review.findAll({
-      where:{
-        spotId: req.params.id
+    where:{
+      spotId: req.params.id
+    },
+    include: [
+      {
+        model:User,
+        attributes:['id','firstName','lastName']
       },
-      include: [
-        {
-          model:User,
-          attributes:['id','firstName','lastName']
-        },
-        {
-          model:ReviewImage,
-          attributes:['id','url']
+      {
+        model:ReviewImage,
+        attributes:['id','url']
         }
       ]
+    })
+
+    res.status(200).json(reviews)
   })
 
-  res.status(200).json(reviews)
-})
+  // Get all spots
+  router.get('/', async(req,res) => {
+    const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 
-// Get all spots
-router.get('/', async(req,res) => {
-  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+    // Validate query parameters
+    if (
+      isNaN(page) || isNaN(size) ||
+      page < 1 || page > 10 ||
+      size < 1 || size > 20 ||
+      (minLat && isNaN(minLat)) ||
+      (maxLat && isNaN(maxLat)) ||
+      (minLng && isNaN(minLng)) ||
+      (maxLng && isNaN(maxLng)) ||
+      (minPrice && isNaN(minPrice)) ||
+      (maxPrice && isNaN(maxPrice))
+      ) {
+        res.status(400).json({ error: 'Invalid query parameters' });
+        return;
+      }
 
-  // Validate query parameters
-  if (
-    isNaN(page) || isNaN(size) ||
-    page < 1 || page > 10 ||
-    size < 1 || size > 20 ||
-    (minLat && isNaN(minLat)) ||
-    (maxLat && isNaN(maxLat)) ||
-    (minLng && isNaN(minLng)) ||
-    (maxLng && isNaN(maxLng)) ||
-    (minPrice && isNaN(minPrice)) ||
-    (maxPrice && isNaN(maxPrice))
-  ) {
-    res.status(400).json({ error: 'Invalid query parameters' });
-    return;
-  }
-
-  // Build filters based on query parameters
-  const filters = {};
-  if (minLat || maxLat) {
-    filters.lat = {};
-    if (minLat) filters.lat[Op.gte] = minLat;
-    if (maxLat) filters.lat[Op.lte] = maxLat;
-  }
+      // Build filters based on query parameters
+      const filters = {};
+      if (minLat || maxLat) {
+        filters.lat = {};
+        if (minLat) filters.lat[Op.gte] = minLat;
+        if (maxLat) filters.lat[Op.lte] = maxLat;
+      }
   if (minLng || maxLng) {
     filters.lng = {};
     if (minLng) filters.lng[Op.gte] = minLng;
@@ -454,6 +480,25 @@ router.get('/', async(req,res) => {
   });
 })
 
+// Delete a spot based on spot Id
+router.delete('/:id', async(req,res,next) => {
+  const doomedSpot = await Spot.findByPk(req.params.id);
+
+  // Ensure spot exists
+  if(!doomedSpot) {
+    res.status(404).json({error:`No spot found with Id of ${req.params.id}`})
+  }
+
+  // Ensure only spot owner can delete
+  if(doomedSpot.ownerId !== req.user.id) {
+    res.status(403).json({error:`Only the spot owner is permitted to delete this spot`})
+  }
+
+  // Destroy the spot
+  await doomedSpot.destroy();
+  res.status(200).json({message:`Successfully deleted spot with id of ${req.params.id}`})
+
+})
 
 
 module.exports = router;

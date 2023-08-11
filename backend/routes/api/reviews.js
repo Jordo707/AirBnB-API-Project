@@ -82,6 +82,7 @@ router.get('/current', async(req, res, next) => {
 
       const formattedReviews = userReviews.map((review) => {
         const { id, review: reviewText, stars, createdAt, updatedAt, User, Spot } = review;
+        const spotImage = Spot.SpotImages[0] ? Spot.SpotImages[0].url : null;
 
         const spotData = {
           id: Spot.id,
@@ -94,6 +95,7 @@ router.get('/current', async(req, res, next) => {
           lng: Spot.lng,
           name: Spot.name,
           price: Spot.price,
+          previewImage: spotImage,
         };
 
         const user = {
@@ -107,7 +109,6 @@ router.get('/current', async(req, res, next) => {
           url: image.url,
         }));
 
-        const spotImage = Spot.SpotImages[0] ? Spot.SpotImages[0].url : null;
 
         return {
           id,
@@ -118,7 +119,6 @@ router.get('/current', async(req, res, next) => {
           User: user,
           Spot: spotData,
           ReviewImages: reviewImages,
-          previewImage: spotImage,
         };
       });
 
