@@ -164,6 +164,11 @@ router.get('/current', async(req, res) => {
 // Get details of a spot by id
 router.get('/:id', async(req,res) => {
   const spot = await Spot.findByPk(req.params.id, {
+    attributes: [
+      'id', 'ownerId', 'address', 'city', 'state', 'country',
+      'lat', 'lng', 'name', 'description', 'price',
+      'createdAt', 'updatedAt'
+    ],
     include: [
       {
         model: Review,
@@ -186,7 +191,13 @@ router.get('/:id', async(req,res) => {
     res.status(404).json({error:`No spot found with id of ${req.params.id}`})
   }
 
-  res.json(spot)
+  const responseSpot = {
+    ...spot.toJSON(),
+    numReviews: spot.Reviews[0]?.dataValues.numReviews || 0,
+    avgNumStars: spot.Reviews[0]?.dataValues.avgNumStars || 0
+  };
+
+  res.json(responseSpot);
 })
 
 // Edit a spot
