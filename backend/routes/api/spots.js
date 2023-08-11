@@ -197,6 +197,8 @@ router.get('/:id', async(req,res) => {
     avgNumStars: spot.Reviews[0]?.dataValues.avgNumStars || 0
   };
 
+  delete responseSpot.Reviews;
+
   res.json(responseSpot);
 })
 
