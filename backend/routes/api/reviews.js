@@ -39,93 +39,94 @@ router.post('/:id/images', async(req, res, next) => {
 
 // Get all the reviews from the current user
 router.get('/current', async(req, res, next) => {
-    const userReviews = await Review.findAll({
-        where: {
-          userId: req.user.id,
-        },
+  const userReviews = await Review.findAll({
+    where: {
+      userId: req.user.id,
+    },
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+      {
+        model: Spot,
+        attributes: [
+          'id',
+          'ownerId',
+          'address',
+          'city',
+          'state',
+          'country',
+          'lat',
+          'lng',
+          'name',
+          'price',
+        ],
         include: [
           {
-            model: User,
-            attributes: ['id', 'firstName', 'lastName'],
-          },
-          {
-            model: Spot,
-            attributes: [
-              'id',
-              'ownerId',
-              'address',
-              'city',
-              'state',
-              'country',
-              'lat',
-              'lng',
-              'name',
-              'price',
-            ],
-            include: [
-              {
-                model: SpotImage,
-                attributes: ['url'],
-                where: {
-                  preview: true,
-                },
-                required: false,
-              },
-            ],
-          },
-          {
-            model: ReviewImage,
-            attributes: ['id', 'url'],
+            model: SpotImage,
+            attributes: ['url'],
+            where: {
+              preview: true,
+            },
+            required: false,
           },
         ],
-      });
+      },
+      {
+        model: ReviewImage,
+        attributes: ['id', 'url'],
+      },
+    ],
+  });
 
-      const formattedReviews = userReviews.map((review) => {
-        const { id, review: reviewText, stars, createdAt, updatedAt, User, Spot } = review;
-        const spotImage = Spot.SpotImages[0] ? Spot.SpotImages[0].url : null;
+  const formattedReviews = userReviews.map((review) => {
+    const { id, userId, spotId, review: reviewText, stars, createdAt, updatedAt, User, Spot } = review;
+    const spotImage = Spot.SpotImages[0] ? Spot.SpotImages[0].url : null;
 
-        const spotData = {
-          id: Spot.id,
-          ownerId: Spot.ownerId,
-          address: Spot.address,
-          city: Spot.city,
-          state: Spot.state,
-          country: Spot.country,
-          lat: Spot.lat,
-          lng: Spot.lng,
-          name: Spot.name,
-          price: Spot.price,
-          previewImage: spotImage,
-        };
+    const spotData = {
+      id: Spot.id,
+      ownerId: Spot.ownerId,
+      address: Spot.address,
+      city: Spot.city,
+      state: Spot.state,
+      country: Spot.country,
+      lat: Spot.lat,
+      lng: Spot.lng,
+      name: Spot.name,
+      price: Spot.price,
+      previewImage: spotImage,
+    };
 
-        const user = {
-          id: User.id,
-          firstName: User.firstName,
-          lastName: User.lastName,
-        };
+    const user = {
+      id: User.id,
+      firstName: User.firstName,
+      lastName: User.lastName,
+    };
 
-        const reviewImages = review.ReviewImages.map((image) => ({
-          id: image.id,
-          url: image.url,
-        }));
+    const reviewImages = review.ReviewImages.map((image) => ({
+      id: image.id,
+      url: image.url,
+    }));
 
+    return {
+      id,
+      userId,
+      spotId,
+      review: reviewText,
+      stars,
+      createdAt,
+      updatedAt,
+      User: user,
+      Spot: spotData,
+      ReviewImages: reviewImages,
+    };
+  });
 
-        return {
-          id,
-          review: reviewText,
-          stars,
-          createdAt,
-          updatedAt,
-          User: user,
-          Spot: spotData,
-          ReviewImages: reviewImages,
-        };
-      });
-
-      res.status(200).json(formattedReviews);
-
-
-})
+  res.status(200).json({
+    Reviews: formattedReviews,
+  });
+});
 
 // Edit a review
 router.put('/:id', async(req,res,next) => {

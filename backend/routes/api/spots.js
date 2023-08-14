@@ -335,7 +335,7 @@ router.get('/:id/bookings', async(req,res,next) => {
     }
   });
 
-    res.json(filteredBookings);
+    res.json({Bookings:filteredBookings});
 })
 
 
@@ -380,31 +380,61 @@ router.post('/:id/reviews', async(req,res,next) => {
 })
 
 // Get reviews of a spot based on spotId
-router.get('/:id/reviews', async(req,res,next) => {
-  const spot = await Spot.findByPk(req.params.id)
+router.get('/:id/reviews', async(req, res, next) => {
+  const spot = await Spot.findByPk(req.params.id);
 
-  if(!spot) {
-    res.status(404).json({ message: `Spot couldn't be found`})
+  if (!spot) {
+    res.status(404).json({ message: `Spot couldn't be found` });
+    return;
   }
 
   const reviews = await Review.findAll({
-    where:{
-      spotId: req.params.id
+    where: {
+      spotId: req.params.id,
     },
     include: [
       {
-        model:User,
-        attributes:['id','firstName','lastName']
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
       },
       {
-        model:ReviewImage,
-        attributes:['id','url']
-        }
-      ]
-    })
+        model: ReviewImage,
+        attributes: ['id', 'url'],
+      },
+    ],
+  });
 
-    res.status(200).json(reviews)
-  })
+  const formattedReviews = reviews.map((review) => {
+    const { id, userId, spotId, review: reviewText, stars, createdAt, updatedAt, User, ReviewImages } = review;
+
+    const user = {
+      id: User.id,
+      firstName: User.firstName,
+      lastName: User.lastName,
+    };
+
+    const reviewImages = ReviewImages.map((image) => ({
+      id: image.id,
+      url: image.url,
+    }));
+
+    return {
+      id,
+      userId,
+      spotId,
+      review: reviewText,
+      stars,
+      createdAt,
+      updatedAt,
+      User: user,
+      ReviewImages: reviewImages,
+    };
+  });
+
+  res.status(200).json({
+    Reviews: formattedReviews,
+  });
+});
 
   // Get all spots
   router.get('/', async(req,res) => {
@@ -467,8 +497,29 @@ router.get('/:id/reviews', async(req,res,next) => {
     ]
   });
 
+  // Fetch average ratings for all spots
+  const spotIds = spots.map(spot => spot.id);
+  const avgRatings = await Review.findAll({
+    attributes: [
+      'spotId',
+      [Sequelize.fn('AVG', Sequelize.col('stars')), 'avgRating'] // Assign an alias 'avgRating'
+    ],
+    where: {
+      spotId: spotIds
+    },
+    group: ['spotId']
+  });
+
+  // Create a mapping of spotId to average rating
+  const avgRatingsMap = {};
+  avgRatings.forEach(rating => {
+    avgRatingsMap[rating.spotId] = rating.dataValues.avgRating; // Use the correct alias here
+  });
+
+  // Create the response data
   const responseSpots = spots.map(spot => ({
     ...spot.toJSON(),
+    avgRating: avgRatingsMap[spot.id] || null,
     previewImage: spot.SpotImages[0]?.url || null,
     SpotImages: undefined // Remove the SpotImages array from the response
   }));

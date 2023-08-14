@@ -42,7 +42,7 @@ router.get('/current', async(req, res) => {
         },
         include: [Spot]
     })
-    res.json(currentBookings)
+    res.json({Bookings:currentBookings})
 })
 
 // Edit a booking
