@@ -11,15 +11,21 @@ import App from "./App";
 import configureStore from "./store";
 import { restoreCSRF, csrfFetch } from "./store/csrf";
 import * as sessionActions from "./store/session";
+import * as allSpotActions from './store/allSpots';
+import * as spotActions from './store/spot';
 
 const store = configureStore();
 
 if (process.env.NODE_ENV !== "production") {
   restoreCSRF();
 
+  // window.onload = console.log('store', store)
+
   window.csrfFetch = csrfFetch;
   window.store = store;
   window.sessionActions = sessionActions;
+  window.allSpotActions = allSpotActions;
+  window.spotActions = spotActions;
 }
 
 // Wrap the application with the Modal provider and render the Modal component

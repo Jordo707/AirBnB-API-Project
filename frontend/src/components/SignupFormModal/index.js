@@ -15,6 +15,9 @@ function SignupFormModal() {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
 
+  // ensure that all fields have content
+  const isAnyFieldBlank = !email || username.length < 4 || !firstName || !lastName || password.length < 6 || !confirmPassword;
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
@@ -107,7 +110,7 @@ function SignupFormModal() {
         {errors.confirmPassword && (
           <p>{errors.confirmPassword}</p>
         )}
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={isAnyFieldBlank}>Sign Up</button>
       </form>
     </>
   );

@@ -3,6 +3,7 @@ import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
+import { useEffect } from "react";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -10,6 +11,12 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(true);
+
+  // Update submit button disable state whenever username or password changes
+  useEffect(() => {
+    setIsSubmitDisabled(credential.length < 4 || password.length < 6);
+  }, [credential, password]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -49,7 +56,7 @@ function LoginFormModal() {
         {errors.credential && (
           <p>{errors.credential}</p>
         )}
-        <button type="submit">Log In</button>
+        <button type="submit" disabled={isSubmitDisabled}>Log In</button>
       </form>
     </>
   );
