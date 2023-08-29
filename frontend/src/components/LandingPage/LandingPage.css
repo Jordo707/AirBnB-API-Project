@@ -3,6 +3,7 @@
     grid-template-columns: repeat(4, minmax(0, 1fr)); /* Four columns */
     gap: 20px;
     padding: 20px;
+    border: 2px, solid, red;
 }
 
 .spot-card {
@@ -12,6 +13,11 @@
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
+}
+
+.spot-card-row {
+    display: flex;
+    justify-content: space-between;
 }
 
 .spot-card:hover {

@@ -48,15 +48,38 @@ const SpotList = () => {
 
     return (
         <div className="spot-list">
-            {spots.map((spot, index) => (
-                <div className="spot-card" key={spot.id}>
-                    <Link to={`/spots/${spot.id}`}>
-                        <img src={spot.imageUrl} alt={spot.name} />
-                        <h3>{spot.name}</h3>
-                        <p>Price: ${spot.price}</p>
-                    </Link>
-                </div>
-            ))}
+            {spots.map(spot => {
+                if (!spot.id || !spot.name || !spot.price) {
+                    return null;
+                }
+
+                const imageUrl = spot.previewImage || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo0nwDRO1dYTQIhm9Sz8sA20Wqk8xaiNyhQg&usqp=CAU";
+
+                return (
+                    <div className="spot-card" key={spot.id} title={spot.name}>
+                        <Link to={`/spots/${spot.id}`} className="spot-card-link">
+                            <div className="spot-card-image">
+                                <img src={imageUrl} alt={spot.name} />
+                            </div>
+                            <div className="spot-card-details">
+                                <div className="spot-card-row">
+                                    <div className="spot-card-location">
+                                        {`${spot.city}, ${spot.state}`}
+                                    </div>
+                                    <div className="spot-card-rating">
+                                        {`Avg Rating: ${spot.avgRating || 'New'}`}
+                                    </div>
+                                </div>
+                                <div className="spot-card-row">
+                                    <div className="spot-card-price">
+                                        {`$${spot.price} night`}
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
+                );
+            })}
         </div>
     );
 };
