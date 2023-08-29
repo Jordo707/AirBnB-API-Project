@@ -9,7 +9,8 @@ export const getAllSpots = () => async dispatch => {
     const response = await fetch('/api/spots');
 
     if (response.ok) {
-        const allSpots = await response.json();
+        const getAllSpots = await response.json();
+        const allSpots = getAllSpots.Spots
         dispatch(loadAllSpots(allSpots))
     }
 }
@@ -27,18 +28,23 @@ const sortList = (list) => {
 const allSpotsReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOAD_SPOTS:
+            if (!Array.isArray(action.allSpots)) {
+                console.error('Invalid allSpots data:', action.allSpots);
+                return state;
+            }
+
             const allSpots = {};
             action.allSpots.forEach(spot => {
                 allSpots[spot.id] = spot;
             });
-            console.log('All Spots: ', allSpots)
+
             return {
                 ...allSpots,
                 ...state,
                 list: sortList(action.allSpots)
             };
         default:
-            return state
+            return state;
     }
 }
 
