@@ -23,7 +23,7 @@ function App() {
             <SpotList/>
           </Route>
           <Route path='/spots/new'>
-            {/* Insert New Spot Creation Form here */}
+            {/* Insert New Spot Form */}
           </Route>
         </Switch>
         )}
