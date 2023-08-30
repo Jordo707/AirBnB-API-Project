@@ -58,6 +58,9 @@ export const createSpot = (spotData) => async (dispatch) => {
 }
 
 const initialState = {
+    // spot: {
+    //     spotImages: []
+    // }
 }
 
 const spotReducer = (state = initialState, action) => {

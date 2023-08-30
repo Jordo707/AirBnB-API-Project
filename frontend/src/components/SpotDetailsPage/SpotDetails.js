@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-// import { getSpotDetails } from "../../store/spot";
 import * as spotActions from "../../store/spot"
 import "./SpotDetails.css";
 
 const SpotDetails = () => {
     const dispatch = useDispatch();
-    console.log("useParams: ", useParams())
     const { spotId } = useParams();
 
     const spot = useSelector(state => state.spot.spot);
@@ -18,7 +16,6 @@ const SpotDetails = () => {
     if (!spot) {
         return <div>Loading...</div>;
     }
-    console.log(spot)
     return (
         <div className="spot-details">
             <div className="spot-header">
@@ -38,16 +35,9 @@ const SpotDetails = () => {
                 <p>{spot.description}</p>
             </div>
 
-            {/* <div className="spot-reviews">
+            <div className="spot-reviews">
                 <h2>Reviews:</h2>
-                {spot.Reviews.map(review => (
-                    <div className="review" key={review.id}>
-                        <p>By: {review.User.firstName}</p>
-                        <p>Date: {new Date(review.createdAt).toLocaleDateString()}</p>
-                        <p>{review.review}</p>
-                    </div>
-                ))}
-            </div> */}
+            </div>
         </div>
     );
 };
