@@ -1,47 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getSpotDetails } from "../../store/spot";
+// import { getSpotDetails } from "../../store/spot";
+import * as spotActions from "../../store/spot"
 import "./SpotDetails.css";
 
 const SpotDetails = () => {
     const dispatch = useDispatch();
-    const { id } = useParams();
-    const spot = useSelector(state => state.spot.details); // Make sure this matches your Redux store structure
+    console.log("useParams: ", useParams())
+    const { spotId } = useParams();
 
+    const spot = useSelector(state => state.spot.spot);
     useEffect(() => {
-        dispatch(getSpotDetails(id));
-    }, [dispatch, id]);
+        dispatch(spotActions.getSpotDetails(spotId));
+    }, [dispatch, spotId]);
 
     if (!spot) {
         return <div>Loading...</div>;
     }
-
+    console.log(spot)
     return (
         <div className="spot-details">
-            {/* Header */}
             <div className="spot-header">
                 <h1>{spot.name}</h1>
                 <h3>{`${spot.city}, ${spot.state}, ${spot.country}`}</h3>
             </div>
 
-            {/* Preview Image */}
             <div className="spot-image">
                 <img src={spot.previewImage} alt={spot.name} />
             </div>
 
-            {/* User Information */}
             <div className="spot-user-info">
                 <h2>Owner: {`${spot.User.firstName} ${spot.User.lastName}`}</h2>
             </div>
 
-            {/* Description */}
             <div className="spot-description">
                 <p>{spot.description}</p>
             </div>
 
-            {/* Reviews */}
-            <div className="spot-reviews">
+            {/* <div className="spot-reviews">
                 <h2>Reviews:</h2>
                 {spot.Reviews.map(review => (
                     <div className="review" key={review.id}>
@@ -50,7 +47,7 @@ const SpotDetails = () => {
                         <p>{review.review}</p>
                     </div>
                 ))}
-            </div>
+            </div> */}
         </div>
     );
 };

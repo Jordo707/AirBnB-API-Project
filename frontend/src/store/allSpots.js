@@ -1,9 +1,15 @@
 const LOAD_SPOTS = 'spots/LOAD_SPOTS'
+const LOAD_SPOT = 'spots/LOAD_SPOT'
 
 export const loadAllSpots = allSpots => ({
     type: LOAD_SPOTS,
     allSpots
 });
+
+export const loadOneSpot = singleSpot => ({
+    type: LOAD_SPOT,
+    singleSpot
+})
 
 export const getAllSpots = () => async dispatch => {
     const response = await fetch('/api/spots');
@@ -15,15 +21,20 @@ export const getAllSpots = () => async dispatch => {
     }
 }
 
-const initialState = {
-    list:[],
+export const getOneSpot = (spotId) => async dispatch => {
+    const response = await fetch(`/api/spots/${spotId}`);
+
+    if (response.ok) {
+        const getOneSpot = await response.json();
+        const singleSpot = getOneSpot.Spot
+        dispatch(loadOneSpot(singleSpot))
+    }
 }
 
-const sortList = (list) => {
-    return list.sort((SpotA, SpotB) => {
-        return SpotA.id - SpotB.id;
-    }).map((spot) => spot.id)
+const initialState = {
+    spot:{},
 }
+
 
 const allSpotsReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -32,17 +43,20 @@ const allSpotsReducer = (state = initialState, action) => {
                 console.error('Invalid allSpots data:', action.allSpots);
                 return state;
             }
-
             const allSpots = {};
             action.allSpots.forEach(spot => {
                 allSpots[spot.id] = spot;
             });
 
             return {
-                ...allSpots,
                 ...state,
-                list: sortList(action.allSpots)
+                ...allSpots
             };
+        // case LOAD_SPOT:
+        //     return {
+        //         ...state,
+        //         spot: action.spot,
+        //     };
         default:
             return state;
     }

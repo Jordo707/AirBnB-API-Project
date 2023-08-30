@@ -5,6 +5,8 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import SpotList from "./components/LandingPage/LandingPage";
 import { Route } from "react-router-dom/cjs/react-router-dom.min";
+import NewSpotForm from "./components/NewSpotForm/NewSpotForm";
+import SpotDetails from "./components/SpotDetailsPage/SpotDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -23,7 +25,10 @@ function App() {
             <SpotList/>
           </Route>
           <Route path='/spots/new'>
-            {/* Insert New Spot Form */}
+            <NewSpotForm/>
+          </Route>
+          <Route path='/spots/:spotId'>
+            <SpotDetails/>
           </Route>
         </Switch>
         )}

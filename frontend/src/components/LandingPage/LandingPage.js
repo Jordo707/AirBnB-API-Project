@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { getAllSpots } from "../../store/allSpots";
-import "./LandingPage.css"; 
+import "./LandingPage.css";
 
 const SpotList = () => {
     const dispatch = useDispatch();
@@ -25,7 +25,9 @@ const SpotList = () => {
                     <div className="spot-card" key={spot.id} title={spot.name}>
                         <Link to={`/spots/${spot.id}`} className="spot-card-link">
                             <div className="spot-card-image">
-                                <img src={imageUrl} alt={spot.name} />
+                                <div className="image-container">
+                                 <img src={imageUrl} alt={spot.name} className="spot-card-img" />
+                                </div>
                             </div>
                             <div className="spot-card-details">
                                 <div className="spot-card-row">
