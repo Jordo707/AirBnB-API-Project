@@ -6,6 +6,7 @@ import "./SpotDetails.css";
 
 const SpotDetails = () => {
     const dispatch = useDispatch();
+    console.log(useParams())
     const { spotId } = useParams();
 
     const spot = useSelector(state => state.spot.spot);
@@ -13,8 +14,19 @@ const SpotDetails = () => {
         dispatch(spotActions.getSpotDetails(spotId));
     }, [dispatch, spotId]);
 
+
+
     if (!spot) {
         return <div>Loading...</div>;
+    }
+
+    const previewImage = spot.SpotImages.find(image => image.preview === true);
+
+    let previewUrl
+    if(previewImage) {
+        previewUrl = previewImage.url
+    }else {
+        previewUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo0nwDRO1dYTQIhm9Sz8sA20Wqk8xaiNyhQg&usqp=CAU"
     }
     return (
         <div className="spot-details">
@@ -23,12 +35,18 @@ const SpotDetails = () => {
                 <h3>{`${spot.city}, ${spot.state}, ${spot.country}`}</h3>
             </div>
 
-            <div className="spot-image">
-                <img src={spot.previewImage} alt={spot.name} />
+            <div className="main-spot-image">
+                <img src={previewUrl} alt={spot.name} />
+            </div>
+
+            <div className="image-list">
+                    {/* {spot.spotImages.map(image => (
+                        <img key={image.id} src={image.url} alt={spot.name} />
+                    ))} */}
             </div>
 
             <div className="spot-user-info">
-                <h2>Owner: {`${spot.User.firstName} ${spot.User.lastName}`}</h2>
+                <h2>Hosted by {`${spot.User.firstName} ${spot.User.lastName}`}</h2>
             </div>
 
             <div className="spot-description">

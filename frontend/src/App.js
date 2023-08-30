@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
-import SpotList from "./components/LandingPage/LandingPage";
+import SpotList from "./components/LandingPage/LandingPage.js";
 import { Route } from "react-router-dom/cjs/react-router-dom.min";
 import NewSpotForm from "./components/NewSpotForm/NewSpotForm";
 import SpotDetails from "./components/SpotDetailsPage/SpotDetails";

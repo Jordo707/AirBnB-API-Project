@@ -53,14 +53,12 @@ export const createSpot = (spotData) => async (dispatch) => {
         }),
     });
     const data = await response.json();
-    dispatch(createSpotAction(data.spotData));
-    return response
+    dispatch(createSpotAction(data));
+    return data
 }
 
 const initialState = {
-    // spot: {
-    //     spotImages: []
-    // }
+
 }
 
 const spotReducer = (state = initialState, action) => {
