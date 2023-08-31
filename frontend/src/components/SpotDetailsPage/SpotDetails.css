@@ -1,13 +1,28 @@
-.main-spot-image {
+.image-list {
     display: flex;
-    justify-content: left;
-    align-items: center;
-    width: 40%;
-    margin-top: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    width: 95%;
+    margin: 0 auto;
+    gap: 10px;
 }
 
-.main-spot-image img {
-    height: 100%;
+.spot-image-preview,
+.additional-images {
+    width: 50%;
+    flex: 1 0 auto;
+}
+
+.spot-image-preview img,
+.additional-images img {
     width: 100%;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
+}
+
+.additional-images {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 10px;
 }

@@ -29,6 +29,10 @@ const SpotDetails = () => {
     }else {
         previewUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo0nwDRO1dYTQIhm9Sz8sA20Wqk8xaiNyhQg&usqp=CAU"
     }
+
+    const spotImages = spot.SpotImages.filter(image => !image.preview);
+    const defaultImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo0nwDRO1dYTQIhm9Sz8sA20Wqk8xaiNyhQg&usqp=CAU";
+
     return (
         <div className="spot-details">
             <div className="spot-header">
@@ -36,14 +40,15 @@ const SpotDetails = () => {
                 <h3>{`${spot.city}, ${spot.state}, ${spot.country}`}</h3>
             </div>
 
-            <div className="main-spot-image">
-                <img src={previewUrl} alt={spot.name} />
-            </div>
-
             <div className="image-list">
-                    {/* {spot.spotImages.map(image => (
-                        <img key={image.id} src={image.url} alt={spot.name} />
-                    ))} */}
+                <div className="spot-image-preview">
+                    <img src={previewUrl} alt={spot.name} />
+                </div>
+                <div className="additional-images">
+                    {spotImages.map(image => (
+                        <img key={image.id} src={image.url || defaultImageUrl} alt={spot.name} />
+                    ))}
+                </div>
             </div>
 
             <div className="spot-user-info">
