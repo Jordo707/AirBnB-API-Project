@@ -8,15 +8,18 @@ const UserSpotList = () => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.session.user);
     const spots = useSelector(state => Object.values(state.allSpots));
+    // console.log('spots: ', spots)
 
     useEffect(() => {
         dispatch(getUserSpots());
     }, [dispatch]);
 
     const userSpots = spots.filter(spot => spot.ownerId === user.id);
-    console.log('spots', spots)
+    // console.log('spots', spots)
 
     return (
+        <>
+        <h2>Manage Spots</h2>
         <div className="spot-list">
             {userSpots.map(spot => {
                 if (!spot.id || !spot.name || !spot.price) {
@@ -61,6 +64,7 @@ const UserSpotList = () => {
                 );
             })}
         </div>
+        </>
     );
 };
 

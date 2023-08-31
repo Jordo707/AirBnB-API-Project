@@ -34,7 +34,7 @@ export const createSpotImages = (spotImagesData) => async (dispatch) => {
     if (response.ok) {
         console.log('response ok')
         const spotImages = await response.json();
-        dispatch(createSpotImages(spotImages));
+        // dispatch(createSpotImages(spotImages));
         return spotImages
     }
 };

@@ -15,14 +15,16 @@ export const loadUserSpots = userSpots => ({
     userSpots
 })
 
-export const getUserSpots = () => async (dispatch) => {
-    const response = await fetch(`/api/spots/current`);
+export const getUserSpots = () => async (dispatch, getState) => {
+    const state = getState();
+    const user = state.session.user;
+    const response = await fetch(`/api/spots`);
 
     if (response.ok) {
-        const getUserSpots = await response.json();
-        console.log(getUserSpots)
-        const userSpots = getUserSpots
-        dispatch(loadUserSpots(userSpots))
+        const allSpots = await response.json();
+        console.log('thunk allSpots ',allSpots)
+        const userSpots = allSpots.Spots.filter(spot => spot.ownerId === user.id);
+        dispatch(loadUserSpots(userSpots));
     }
 }
 
