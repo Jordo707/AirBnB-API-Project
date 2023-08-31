@@ -31,34 +31,46 @@ function LoginFormModal() {
       });
   };
 
+  const handleDemoLogin = () => {
+    dispatch(sessionActions.login({ credential: "Demo-lition", password: "password" }))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      });
+  };
+
   return (
-    <>
-      <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username or Email
+    <div className="login-form-container">
+      <div className="login-form">
+        <h1>Log In</h1>
+        <form onSubmit={handleSubmit}>
+          {errors.credential && <p>{errors.credential}</p>}
           <input
             type="text"
+            placeholder="Username or Email"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Password
           <input
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
-        )}
-        <button type="submit" disabled={isSubmitDisabled}>Log In</button>
-      </form>
-    </>
+          <button type="submit" disabled={isSubmitDisabled}>
+            Log In
+          </button>
+        </form>
+        <button className="demo-login-button" onClick={handleDemoLogin}>
+          Demo User Login
+        </button>
+      </div>
+    </div>
   );
 }
 
