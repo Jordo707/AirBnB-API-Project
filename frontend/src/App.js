@@ -8,6 +8,7 @@ import { Route } from "react-router-dom/cjs/react-router-dom.min";
 import NewSpotForm from "./components/NewSpotForm/NewSpotForm";
 import SpotDetails from "./components/SpotDetailsPage/SpotDetails";
 import UserSpotList from "./components/ManageSpotsPage/ManageSpots";
+import EditSpotForm from "./components/EditSpotForm/EditSpotForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,6 +31,9 @@ function App() {
           </Route>
           <Route path='/spots/current'>
             <UserSpotList/>
+          </Route>
+          <Route path="/spots/:spotId/edit">
+            <EditSpotForm/>
           </Route>
           <Route path='/spots/:spotId'>
             <SpotDetails/>

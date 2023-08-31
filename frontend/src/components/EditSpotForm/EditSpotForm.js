@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import * as spotActions from "../../store/spot";
 
-const defaultImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo0nwDRO1dYTQIhm9Sz8sA20Wqk8xaiNyhQg&usqp=CAU";
-
-const NewSpotForm = () => {
+const EditSpotForm = () => {
     const dispatch = useDispatch();
     const history = useHistory();
+    const { spotId } = useParams();
+    const spot = useSelector(state => state.spot.spot);
 
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("");
@@ -16,7 +17,23 @@ const NewSpotForm = () => {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
-    const [imageUrls, setImageUrls] = useState(["", "", "", "", ""]);
+    const [imageUrls, setImageUrls] = useState([]);
+
+    useEffect(() => {
+        if (spot) {
+            setAddress(spot.address);
+            setCity(spot.city);
+            setState(spot.state);
+            setCountry(spot.country);
+            setName(spot.name);
+            setDescription(spot.description);
+            setPrice(spot.price);
+            setImageUrls(spot.SpotImages.map(image => image.url));
+        } else {
+            // Fetch spot details using spotId if spot is not available in the store
+            dispatch(spotActions.getSpotDetails(spotId));
+        }
+    }, [dispatch, spot, spotId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -34,22 +51,10 @@ const NewSpotForm = () => {
             imageUrls: imageUrls.filter(url => url.trim() !== "")
         };
 
-        const createdSpot = await dispatch(spotActions.createSpot(payload));
-        console.log('Created Spot:', createdSpot)
-        if (createdSpot) {
-            const spotId = createdSpot.id;
-            const spotImagesData = imageUrls.map((imageUrl, index) => ({
-            spotId,
-            url: imageUrl || defaultImageUrl,
-            preview: index === 0
-        }));
-
-        console.log('spot images data ', spotImagesData);
-
-        await dispatch(spotActions.createSpotImages(spotImagesData));
+        // Dispatch action to update spot details
+        await dispatch(spotActions.updateSpot(spotId, payload));
 
         history.push(`/spots/${spotId}`);
-    }
     };
 
     const handleImageUrlChange = (index, value) => {
@@ -60,7 +65,7 @@ const NewSpotForm = () => {
 
     return (
         <div>
-            <h2>Create a New Spot</h2>
+            <h2>Edit Spot</h2>
             <form onSubmit={handleSubmit}>
             <h3>Where's Your place located?</h3>
                  <label>Street Address:</label>
@@ -128,10 +133,10 @@ const NewSpotForm = () => {
                         />
                     </div>
                 ))}
-                <button type="submit">Create Spot</button>
+                <button type="submit">Update Spot</button>
             </form>
         </div>
     );
 };
 
-export default NewSpotForm;
+export default EditSpotForm;
