@@ -15,6 +15,7 @@ const SpotDetails = () => {
     }, [dispatch, spotId]);
 
 
+    console.log(spot)
 
     if (!spot) {
         return <div>Loading...</div>;

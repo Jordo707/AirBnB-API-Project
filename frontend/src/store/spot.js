@@ -24,6 +24,21 @@ export const getSpotDetails = (id) => async (dispatch) => {
     }
 }
 
+export const createSpotImages = (spotImagesData) => async (dispatch) => {
+    console.log('spotImagesData',spotImagesData)
+    const response = await csrfFetch(`/api/spots/${spotImagesData[0].spotId}/images`, {
+        method: 'POST',
+        body: JSON.stringify(spotImagesData),
+    });
+
+    if (response.ok) {
+        console.log('response ok')
+        const spotImages = await response.json();
+        dispatch(createSpotImages(spotImages));
+        return spotImages
+    }
+};
+
 export const createSpot = (spotData) => async (dispatch) => {
     const {
         ownerId,

@@ -1,15 +1,30 @@
-const LOAD_SPOTS = 'spots/LOAD_SPOTS'
-const LOAD_SPOT = 'spots/LOAD_SPOT'
+import { csrfFetch } from "./csrf";
+
+const LOAD_SPOTS = 'spots/LOAD_SPOTS';
+const LOAD_USER_SPOTS = 'spots/LOAD_USER_SPOTS';
+const DELETE_USER_SPOT = 'spots/DELETE_USER_SPOT';
+
 
 export const loadAllSpots = allSpots => ({
     type: LOAD_SPOTS,
     allSpots
 });
 
-export const loadOneSpot = singleSpot => ({
-    type: LOAD_SPOT,
-    singleSpot
+export const loadUserSpots = userSpots => ({
+    type: LOAD_USER_SPOTS,
+    userSpots
 })
+
+export const getUserSpots = () => async (dispatch) => {
+    const response = await fetch(`/api/spots/current`);
+
+    if (response.ok) {
+        const getUserSpots = await response.json();
+        console.log(getUserSpots)
+        const userSpots = getUserSpots
+        dispatch(loadUserSpots(userSpots))
+    }
+}
 
 export const getAllSpots = () => async dispatch => {
     const response = await fetch('/api/spots');
@@ -21,18 +36,25 @@ export const getAllSpots = () => async dispatch => {
     }
 }
 
-export const getOneSpot = (spotId) => async dispatch => {
-    const response = await fetch(`/api/spots/${spotId}`);
+export const deleteUserSpotAction = (spotId) => ({
+    type: DELETE_USER_SPOT,
+    spotId,
+});
+
+export const deleteUserSpot = (spotId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/spots/${spotId}`, {
+        method: 'DELETE',
+    });
 
     if (response.ok) {
-        const getOneSpot = await response.json();
-        const singleSpot = getOneSpot.Spot
-        dispatch(loadOneSpot(singleSpot))
+        dispatch(deleteUserSpotAction(spotId));
     }
-}
+};
+
 
 const initialState = {
     spot:{},
+    userSpots:[]
 }
 
 
@@ -52,11 +74,25 @@ const allSpotsReducer = (state = initialState, action) => {
                 ...state,
                 ...allSpots
             };
-        // case LOAD_SPOT:
-        //     return {
-        //         ...state,
-        //         spot: action.spot,
-        //     };
+            case LOAD_USER_SPOTS:
+                if (!Array.isArray(action.userSpots)) {
+                    console.error(`Invalid userSpots data ${action.userSpots}`);
+                    return state;
+                }
+
+                const userSpots = {};
+                action.userSpots.forEach(spot => {
+                    userSpots[spot.id] = spot;
+                });
+
+                return {
+                    ...state,
+                    ...userSpots
+                };
+        case DELETE_USER_SPOT:
+            const newState = { ...state };
+            delete newState[action.spotId];
+            return newState;
         default:
             return state;
     }
