@@ -21,7 +21,7 @@ const SpotDetails = () => {
 
     // console.log(`Spot: `, spot)
     // console.log("userId: ", userId)
-    // console.log('Reviews ',reviews)
+    console.log('Reviews ',reviews)
     // console.log("spotOwnerId", spotOwnerId)
     // console.log("You are the spot owner:", spotOwnerId === userId)
 
@@ -36,9 +36,9 @@ const SpotDetails = () => {
         if(userId && userId === spotOwnerId) {
             return null
         }
-        
+
         // ensure the current user hasn't already submitted a review
-        if (userId && reviews.some(review => review.User.id === userId)) {
+        if (userId && reviews.some(review => review?.User?.id === userId)) {
             return null;
         }
 
@@ -67,6 +67,7 @@ const SpotDetails = () => {
         dispatch(reviewActions.getSpotReviews(spotId));
 
         return () => {
+            // dispatch(spotActions.resetSingleSpotAction())
             dispatch(reviewActions.resetReviews())
         }
     }, [dispatch, spotId]);

@@ -16,10 +16,11 @@ export const resetReviews = () => ({
     type: RESET_REVIEWS
 })
 
-export const createReview = (spotId, review) => ({
+export const createReview = (spotId, review, user) => ({
     type: CREATE_REVIEW,
     spotId,
-    review
+    review,
+    user
 })
 
 
@@ -33,7 +34,8 @@ export const getSpotReviews = (spotId) => async (dispatch) => {
     }
 };
 
-export const submitReview = (spotId, review, stars) => async (dispatch) => {
+export const submitReview = (spotId, review, stars, user) => async (dispatch) => {
+
     const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
         method:'POST',
         body:JSON.stringify({review,stars}),
@@ -41,7 +43,10 @@ export const submitReview = (spotId, review, stars) => async (dispatch) => {
 
     if (response.ok) {
         const review = await response.json();
-        dispatch(createReview(spotId, review));
+        console.log("Thunk Review: ", review)
+        dispatch(createReview(spotId, review, user));
+
+        return review
     }
 }
 
@@ -73,15 +78,19 @@ const reviewsReducer = (state = initialState, action) => {
                 spot: {}, // Reset the spot reviews
               };
         case CREATE_REVIEW:
-            const spotReviews = state.spot[action.spotId] || [];
+            const spotReviews = state.spot;
             console.log("SpotReviews ", spotReviews);
             return {
                 ...state,
                 spot: {
                     ...state.spot,
-                    [action.spotId]: [...spotReviews, action.review],
+                    [action.review.id]:{
+                        reviewData: action.review,
+                        User: action.user,
+                        ReviewImages: [],
+                    }
                 },
-            };
+        };
         default:
           return state;
       }

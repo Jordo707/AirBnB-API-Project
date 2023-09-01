@@ -7,6 +7,8 @@ const DELETE_USER_SPOT = "spots/DELETE_USER_SPOT";
 const LOAD_SPOT = "spots/LOAD_SPOT";
 const CREATE_SPOT = "spots/CREATE_SPOT";
 const UPDATE_SPOT = "spots/UPDATE_SPOT";
+const RESET_SPOT = 'spots/RESET_SPOTS';
+
 
 //Action Creators
 export const loadSpot = (spot) => ({
@@ -34,6 +36,11 @@ export const updateSpotAction = (spotId, updatedSpot) => ({
   spotId,
   updatedSpot,
 })
+
+export const resetSingleSpotAction = () => ({
+  type: RESET_SPOT
+})
+
 // Thunks
 export const getSpotDetails = (id) => async (dispatch) => {
   console.log(`id: ${id}`);
@@ -113,7 +120,7 @@ export const getUserSpots = () => async (dispatch, getState) => {
 
 export const getAllSpots = () => async (dispatch) => {
   const response = await fetch("/api/spots");
-  console.log('response ',response)
+  // console.log('response ',response)
 
   if (response.ok) {
     const getAllSpots = await response.json();
@@ -195,6 +202,11 @@ const spotsReducer = (state = initialState, action) => {
         newState.spot = action.updatedSpot;
       }
       return newState;
+    case RESET_SPOT:
+      return {
+        ...state,
+        singleSpot: {}
+      }
     default:
       return state;
   }
