@@ -10,6 +10,8 @@ const EditSpotForm = () => {
     const { spotId } = useParams();
     const spot = useSelector(state => state.spots.singleSpot);
 
+    console.log("Spot, ",spot)
+
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("");
     const [state, setState] = useState("");
@@ -19,8 +21,29 @@ const EditSpotForm = () => {
     const [price, setPrice] = useState("");
     const [imageUrls, setImageUrls] = useState([]);
 
+
+    // useEffect(() => {
+    //     if (spot.id) {
+    //         setAddress(spot.address);
+    //         setCity(spot.city);
+    //         setState(spot.state);
+    //         setCountry(spot.country);
+    //         setName(spot.name);
+    //         setDescription(spot.description);
+    //         setPrice(spot.price);
+    //         setImageUrls(spot.SpotImages.map(image => image.url));
+    //     } else {
+    //         dispatch(spotActions.getSpotDetails(spotId));
+    //         // Fetch spot details using spotId if spot is not available in the store
+    //     }
+    // }, [dispatch, spot, spotId]);
+
     useEffect(() => {
-        if (spot) {
+        // Fetch spot details if spot is not available or if the spot ID in state doesn't match the URL param.
+        if (!spot.id || spot.id !== +spotId) {
+            dispatch(spotActions.getSpotDetails(spotId));
+        } else {
+            // Populate the form fields with spot data.
             setAddress(spot.address);
             setCity(spot.city);
             setState(spot.state);
@@ -29,9 +52,6 @@ const EditSpotForm = () => {
             setDescription(spot.description);
             setPrice(spot.price);
             setImageUrls(spot.SpotImages.map(image => image.url));
-        } else {
-            // Fetch spot details using spotId if spot is not available in the store
-            dispatch(spotActions.getSpotDetails(spotId));
         }
     }, [dispatch, spot, spotId]);
 

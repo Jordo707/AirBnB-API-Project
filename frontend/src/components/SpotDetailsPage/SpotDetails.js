@@ -77,19 +77,27 @@ const SpotDetails = () => {
                         </div>
                     </div>
                     <div className="user-reviews">
-                            {reviews.map(review => (
-                                <div className="review-card">
+                            {reviews.map(review => {
+                                const createdAtDate = new Date(review.createdAt);
+                                const month = createdAtDate.toLocaleString('default', { month: 'long' });
+                                const year = createdAtDate.getFullYear();
+                                const formattedDate = `${month} ${year}`;
+
+                                return (
+
+                                    <div className="review-card">
                                     <div className="review-owner">
                                         {review.User.firstName}
                                     </div>
                                     <div className="review-date">
-                                        {review.createdAt}
+                                        {formattedDate}
                                     </div>
                                     <div className="review-content">
                                         {review.review}
                                     </div>
                                 </div>
-                            ))}
+                                )
+                            })}
                     </div>
                 </div>
             </div>
