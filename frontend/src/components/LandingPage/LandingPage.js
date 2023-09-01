@@ -1,12 +1,18 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getAllSpots } from "../../store/allSpots";
+import { getAllSpots } from "../../store/spots";
 import "./LandingPage.css";
 
 const SpotList = () => {
     const dispatch = useDispatch();
-    const spots = useSelector(state => Object.values(state.allSpots));
+    const spotsObject = useSelector(state => state.spots.allSpots);
+
+    // console.log("Spots Object",spotsObject)
+
+    const spots = Object.values(spotsObject);
+
+    // console.log("Spots ", spots)
 
     useEffect(() => {
         dispatch(getAllSpots());

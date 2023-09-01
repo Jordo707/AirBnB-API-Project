@@ -8,7 +8,7 @@ const EditSpotForm = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const { spotId } = useParams();
-    const spot = useSelector(state => state.spot.spot);
+    const spot = useSelector(state => state.spots.singleSpot);
 
     const [address, setAddress] = useState("");
     const [city, setCity] = useState("");

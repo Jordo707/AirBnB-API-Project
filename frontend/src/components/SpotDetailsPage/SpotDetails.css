@@ -1,8 +1,15 @@
+.spot-details {
+    max-width: 1000px;
+    justify-content: center;
+    align-items: center;
+
+}
+
 .image-list {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    width: 95%;
+    width: fit-content;
     margin: 0 auto;
     gap: 10px;
 }

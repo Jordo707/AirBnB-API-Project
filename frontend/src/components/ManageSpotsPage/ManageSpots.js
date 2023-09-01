@@ -101,14 +101,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { getUserSpots, deleteUserSpot } from "../../store/allSpots";
+import { getUserSpots, deleteUserSpot } from "../../store/spots";
 import "./ManageSpots.css";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const UserSpotList = () => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
-  const spots = useSelector((state) => Object.values(state.allSpots));
+  const spots = useSelector((state) => Object.values(state.spots.allSpots));
 
   useEffect(() => {
     dispatch(getUserSpots());
