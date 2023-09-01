@@ -22,7 +22,7 @@ const SpotDetails = () => {
         dispatch(reviewActions.getSpotReviews(spotId));
     }, [dispatch, spotId]);
 
-    if (!spot.id) {
+    if (!spot.id || !reviews) {
         return <div>Loading...</div>;
     }
 
@@ -57,11 +57,39 @@ const SpotDetails = () => {
                                 ${spot.price}
                             </div>
                             <div className="review-score">
-                                {spot.avgNumStars || "new"}
+                                {spot.avgNumStars ? spot.avgNumStars.toFixed(1) : "new"}
                             </div>
                             <div className="num-reviews">
                                 {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
                             </div>
+                    </div>
+                </div>
+                <div className="dividing-line">
+                            -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                </div>
+                <div className="review-container">
+                    <div className="review-header">
+                        <div className="star-rating">
+                            {spot.avgNumStars ? spot.avgNumStars.toFixed(1) : "new"}
+                        </div>
+                        <div className="number-reviews">
+                            {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                        </div>
+                    </div>
+                    <div className="user-reviews">
+                            {reviews.map(review => (
+                                <div className="review-card">
+                                    <div className="review-owner">
+                                        {review.User.firstName}
+                                    </div>
+                                    <div className="review-date">
+                                        {review.createdAt}
+                                    </div>
+                                    <div className="review-content">
+                                        {review.review}
+                                    </div>
+                                </div>
+                            ))}
                     </div>
                 </div>
             </div>
