@@ -4,22 +4,71 @@ import { useParams } from "react-router-dom";
 import * as spotActions from "../../store/spot";
 import * as reviewActions from '../../store/reviews'
 import "./SpotDetails.css";
+import ReviewModal from "../SubmitReviewModal/SubmitReviewModal";
 
 const SpotDetails = () => {
     const dispatch = useDispatch();
     const { spotId } = useParams();
 
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+
+
     const spot = useSelector(state => state.spots.singleSpot);
+    const userId = useSelector(state => state.session.user ? state.session.user.id : null);
+    const spotOwnerId = spot.ownerId
+    const reviewObject = useSelector(state => state.reviews.spot);
+    const reviews = Object.values(reviewObject)
 
-    console.log(`Spot: `, spot)
+    // console.log(`Spot: `, spot)
+    // console.log("userId: ", userId)
+    // console.log('Reviews ',reviews)
+    // console.log("spotOwnerId", spotOwnerId)
+    // console.log("You are the spot owner:", spotOwnerId === userId)
 
-    const reviews = useSelector(state => state.reviews.Reviews);
+    // Conditionally render the submit review button
+    const renderSubmitReviewButton = () => {
+        // ensure there is a user logged in
+        if(!userId) {
+            return null
+        }
 
-    console.log('Reviews ',reviews)
+        // ensure the current user isn't the owner
+        if(userId && userId === spotOwnerId) {
+            return null
+        }
+        
+        // ensure the current user hasn't already submitted a review
+        if (userId && reviews.some(review => review.User.id === userId)) {
+            return null;
+        }
+
+        return (
+            <>
+            <div className="review-button">
+                <button onClick={openReviewModal}>Submit a review</button>
+            </div>
+            {reviewModalOpen && (
+                <ReviewModal spotId={spotId} onClose={closeReviewModal} />
+            )}
+            </>
+        )
+    };
+
+    const openReviewModal = () => {
+        setReviewModalOpen(true);
+    }
+
+    const closeReviewModal = () => {
+        setReviewModalOpen(false);
+    };
 
     useEffect(() => {
         dispatch(spotActions.getSpotDetails(spotId));
         dispatch(reviewActions.getSpotReviews(spotId));
+
+        return () => {
+            dispatch(reviewActions.resetReviews())
+        }
     }, [dispatch, spotId]);
 
     if (!spot.id || !reviews) {
@@ -76,16 +125,17 @@ const SpotDetails = () => {
                             {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
                         </div>
                     </div>
+                    {renderSubmitReviewButton()}
                     <div className="user-reviews">
                             {reviews.map(review => {
-                                const createdAtDate = new Date(review.createdAt);
+                                const createdAtDate = new Date(review.reviewData.createdAt);
                                 const month = createdAtDate.toLocaleString('default', { month: 'long' });
                                 const year = createdAtDate.getFullYear();
                                 const formattedDate = `${month} ${year}`;
 
                                 return (
 
-                                    <div className="review-card">
+                                    <div className="review-card" key={review.id}>
                                     <div className="review-owner">
                                         {review.User.firstName}
                                     </div>
@@ -93,7 +143,7 @@ const SpotDetails = () => {
                                         {formattedDate}
                                     </div>
                                     <div className="review-content">
-                                        {review.review}
+                                        {review.reviewData.review}
                                     </div>
                                 </div>
                                 )
@@ -103,56 +153,6 @@ const SpotDetails = () => {
             </div>
         </>
     )
-
-    // return (
-
-            //
-            // <div className="spot-details">
-            //     <div className="spot-header">
-            //         <h1>{spot.name}</h1>
-            //         <h3>{`${spot.city}, ${spot.state}, ${spot.country}`}</h3>
-            //     </div>
-
-        {/* <div className="image-list">
-            <div className="spot-image-preview">
-                <img src={previewUrl} alt={spot.name} />
-            </div>
-            <div className="additional-images">
-                {spotImages.map(image => (
-                        <img key={image.id} src={image.url || defaultImageUrl} alt={spot.name} />
-                    ))}
-            </div>
-        </div> */}
-
-                // <div className="spot-user-info">
-                //     <h2>Hosted by {`${spot.User.firstName} ${spot.User.lastName}`}</h2>
-                // </div>
-
-                // <div className="spot-description">
-                //     <p>{spot.description}</p>
-                // </div>
-
-
-            //  {/* <div className="spot-reviews">
-            //             //! Sort out the review issues
-            //                 <h2>Reviews:</h2>
-            //                         {reviews.map(review => (
-                //                             <div className="review-card">
-                //                                 <div className="reviewer">
-                //                                     {review.User.firstName}
-                //                                 </div>
-                //                                 <div className="review-date">
-                //                                     {review.createdAt}
-                //                                 </div>
-                //                                 <div className="review-content">
-                //                                     {review.review}
-                //                                 </div>
-                //                             </div>
-                //                         ))}
-            //             </div> */}
-            // </div>
-            // );
-            // )
 };
 
 export default SpotDetails;
