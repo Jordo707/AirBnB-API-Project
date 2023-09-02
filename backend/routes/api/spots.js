@@ -85,18 +85,31 @@ router.post('/:id/images', async (req,res,next) => {
   if(spot.ownerId !== req.user.id) {
     res.status(403).json({error: `Only the spot owner may add an image`})
   }
+  console.log("req.body " ,req.body)
 
-  //create the image
-  const newSpotImage = await SpotImage.create({
-    spotId:req.params.id,
-    url:req.body.url,
-    preview:req.body.preview
-  })
+  let imageArray = [];
+
+  req.body.forEach(async image => {
+
+    //create the image
+      let newSpotImage = await SpotImage.create({
+      spotId:req.params.id,
+      url:image.url,
+      preview:image.preview
+    })
+    imageArray.push(newSpotImage)
+})
+
+console.log('imageArray ',imageArray)
+
+
+
   res.status(201).json(
     {
-      id: newSpotImage.id,
-      url: newSpotImage.url,
-      preview: newSpotImage.preview,
+      // id: newSpotImage.id,
+      // url: newSpotImage.url,
+      // preview: newSpotImage.preview,
+      imageArray
     }
     )
   })
