@@ -41,7 +41,7 @@ const SpotList = () => {
                                         {`${spot.city}, ${spot.state}`}
                                     </div>
                                     <div className="spot-card-rating">
-                                        {`${spot.avgRating !== undefined && spot.avgRating !== null ? spot.avgRating.toFixed(1) : 'New'}`}
+                                        {typeof spot.avgRating === 'number' ? spot.avgRating.toFixed(1) : 'New'}
                                     </div>
                                 </div>
                                 <div className="spot-card-row">
