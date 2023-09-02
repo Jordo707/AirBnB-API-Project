@@ -25,7 +25,7 @@ const SpotDetails = () => {
     const avgNumStars = parseFloat(spot.avgNumStars);
 
     // Check if avgNumStars is a valid number, if not, set it to "New"
-    const formattedAvgNumStars = isNaN(avgNumStars) ? "New" : avgNumStars.toFixed(1);
+    const formattedAvgNumStars = isNaN(avgNumStars) ? "★ New" : `★ ${avgNumStars.toFixed(1)} ·`;
 
 
     // console.log(`Spot: `, spot)
@@ -113,8 +113,9 @@ const SpotDetails = () => {
                         </div>
                     </div>
                     <div className="reserve-box">
+                        <div className="reserve-box-top">
                             <div className="price">
-                                ${spot.price}
+                                <b>${spot.price}</b> night
                             </div>
                             <div className="review-score">
                                 {formattedAvgNumStars}
@@ -122,6 +123,8 @@ const SpotDetails = () => {
                             <div className="num-reviews">
                                 {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
                             </div>
+                        </div>
+                            <button onClick={() => alert("Feature coming soon")}>Reserve</button>
                     </div>
                 </div>
                 <div className="dividing-line">
@@ -129,52 +132,50 @@ const SpotDetails = () => {
                 </div>
                 <div className="review-container">
                     <div className="review-header">
-                        <div className="star-rating">
-                            {formattedAvgNumStars}
-                        </div>
-                        <div className="number-reviews">
-                            {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
-                        </div>
+                    <div className="star-rating">{formattedAvgNumStars}</div>
+                    {reviews.length > 0 && (
+                    <div className="number-reviews">
+                        {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                    </div>
+                    )}
                     </div>
                     {renderSubmitReviewButton()}
                     <div className="user-reviews">
-                            {reviews.map(review => {
-                                const createdAtDate = new Date(review.reviewData.createdAt);
-                                const month = createdAtDate.toLocaleString('default', { month: 'long' });
-                                const year = createdAtDate.getFullYear();
-                                const formattedDate = `${month} ${year}`;
-                                console.log("Rendering Review:",review)
+                    {reviews.length === 0 && userId && userId !== spotOwnerId? (
+                        // Render "Be the first to post a review!" when there are no reviews
+                        <div className="no-reviews-message">Be the first to post a review!</div>
+                    ) : (
+                        reviews.map((review) => {
+                        const createdAtDate = new Date(review.reviewData.createdAt);
+                        const month = createdAtDate.toLocaleString("default", { month: "long" });
+                        const year = createdAtDate.getFullYear();
+                        const formattedDate = `${month} ${year}`;
+                        console.log("Rendering Review:", review);
 
-                                return (
-
-                                <div className="review-card" key={review.reviewData.id}>
-                                    <div className="review-owner">
-                                        {review.User.firstName}
-                                    </div>
-                                    <div className="review-date">
-                                        {formattedDate}
-                                    </div>
-                                    <div className="review-content">
-                                        {review.reviewData.review}
-                                    </div>
-                                    {userId === review.User.id && (
-                                        <>
-                                        <button onClick={() => handleDeleteReview(review.reviewData.id)}>Delete</button>
-                                        <DeleteReviewModal
-                                            isOpen={reviewToDelete === review.reviewData.id}
-                                            onCancel={() => setReviewToDelete(null)}
-                                            onConfirm={() => {
-                                                dispatch(reviewActions.deleteUserReview(review.reviewData.id));
-                                                console.log('reviewToDelete: ', review.reviewData.id)
-                                                dispatch(spotActions.getSpotDetails(spotId))
-                                                setReviewToDelete(null);
-                                            }}
-                                        />
-                                        </>
-                                    )}
-                                </div>
-                                )
-                            })}
+                        return (
+                            <div className="review-card" key={review.reviewData.id}>
+                            <div className="review-owner">{review.User.firstName}</div>
+                            <div className="review-date">{formattedDate}</div>
+                            <div className="review-content">{review.reviewData.review}</div>
+                            {userId === review.User.id && (
+                                <>
+                                <button onClick={() => handleDeleteReview(review.reviewData.id)}>Delete</button>
+                                <DeleteReviewModal
+                                    isOpen={reviewToDelete === review.reviewData.id}
+                                    onCancel={() => setReviewToDelete(null)}
+                                    onConfirm={() => {
+                                    dispatch(reviewActions.deleteUserReview(review.reviewData.id));
+                                    console.log("reviewToDelete: ", review.reviewData.id);
+                                    dispatch(spotActions.getSpotDetails(spotId));
+                                    setReviewToDelete(null);
+                                    }}
+                                />
+                                </>
+                            )}
+                            </div>
+                        );
+                        })
+                    )}
                     </div>
                 </div>
             </div>

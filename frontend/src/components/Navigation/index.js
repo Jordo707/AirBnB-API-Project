@@ -22,8 +22,10 @@ function Navigation({ isLoaded }){
               <NavLink to="/spots/new">Create New Spot</NavLink>
             </li>
           )}
+            <li className='profile-button'>
+              <ProfileButton user={sessionUser} />
+            </li>
         </ul>
-        <ProfileButton user={sessionUser} />
       </div>
     </nav>
   );

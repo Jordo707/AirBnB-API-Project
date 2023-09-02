@@ -46,37 +46,37 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button onClick={openMenu}>
+      <div onClick={openMenu}>
         <i className="fas fa-user-circle" />
-      </button>
-      <ul className={ulClassName} ref={ulRef}>
-        {user ? (
-          <>
-            <li>Hello, {user.username}</li>
-            {/* <li>{user.firstName} {user.lastName}</li> */}
-            <li>{user.email}</li>
-            <li>
-              <NavLink to='/spots/current'>Manage Spots</NavLink>
-            </li>
-            <li>
-              <button onClick={logout}>Log Out</button>
-            </li>
-          </>
-        ) : (
-          <>
-            <OpenModalMenuItem
-              itemText="Log In"
-              onItemClick={closeMenu}
-              modalComponent={<LoginFormModal />}
-            />
-            <OpenModalMenuItem
-              itemText="Sign Up"
-              onItemClick={closeMenu}
-              modalComponent={<SignupFormModal />}
-            />
-          </>
-        )}
-      </ul>
+        <ul className={ulClassName} ref={ulRef}>
+          {user ? (
+            <>
+              <li>Hello, {user.username}</li>
+              {/* <li>{user.firstName} {user.lastName}</li> */}
+              <li>{user.email}</li>
+              <li>
+                <NavLink to='/spots/current'>Manage Spots</NavLink>
+              </li>
+              <li>
+                <button onClick={logout}>Log Out</button>
+              </li>
+            </>
+          ) : (
+            <>
+              <OpenModalMenuItem
+                itemText="Log In"
+                onItemClick={closeMenu}
+                modalComponent={<LoginFormModal />}
+              />
+              <OpenModalMenuItem
+                itemText="Sign Up"
+                onItemClick={closeMenu}
+                modalComponent={<SignupFormModal />}
+              />
+            </>
+          )}
+        </ul>
+      </div>
     </>
   );
 }

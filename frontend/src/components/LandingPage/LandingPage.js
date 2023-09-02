@@ -44,8 +44,8 @@ const SpotList = () => {
                                         {typeof spot.avgRating === 'string' ?
                                         parseFloat(spot.avgRating).toFixed(1) :
                                         typeof spot.avgRating === 'number' ?
-                                        spot.avgRating.toFixed(1) :
-                                        'New'
+                                        `★ ${spot.avgRating.toFixed(1)}` :
+                                        '★ New'
                                         }
                                     </div>
                                 </div>
