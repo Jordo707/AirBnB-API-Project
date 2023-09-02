@@ -127,7 +127,7 @@ const SpotDetails = () => {
                 <div className="review-container">
                     <div className="review-header">
                         <div className="star-rating">
-                            {spot.avgNumStars ? spot.avgNumStars.toFixed(1) : "new"}
+                        {typeof spot.avgNumStars === 'number' ? spot.avgNumStars.toFixed(1) : "new"}
                         </div>
                         <div className="number-reviews">
                             {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
