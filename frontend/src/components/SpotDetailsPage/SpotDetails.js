@@ -21,6 +21,13 @@ const SpotDetails = () => {
     const reviewObject = useSelector(state => state.reviews.spot);
     const reviews = Object.values(reviewObject)
 
+    // sort reviews to ensure the newest reviews are at the top
+    const sortedReviews = [...reviews].sort((a,b) => {
+        const dateA = new Date(a.reviewData.createdAt);
+        const dateB = new Date(b.reviewData.createdAt);
+        return dateB-dateA;
+    })
+
     // Convert avgNumStars to a number using parseFloat
     const avgNumStars = parseFloat(spot.avgNumStars);
 
@@ -30,7 +37,8 @@ const SpotDetails = () => {
 
     // console.log(`Spot: `, spot)
     // console.log("userId: ", userId)
-    // console.log('Reviews ',reviews)
+    console.log('Reviews ',reviews)
+    console.log('Sorted Reviews ', sortedReviews)
     // console.log("spotOwnerId", spotOwnerId)
     // console.log("You are the spot owner:", spotOwnerId === userId)
 
@@ -145,7 +153,7 @@ const SpotDetails = () => {
                         // Render "Be the first to post a review!" when there are no reviews
                         <div className="no-reviews-message">Be the first to post a review!</div>
                     ) : (
-                        reviews.map((review) => {
+                        sortedReviews.map((review) => {
                         const createdAtDate = new Date(review.reviewData.createdAt);
                         const month = createdAtDate.toLocaleString("default", { month: "long" });
                         const year = createdAtDate.getFullYear();
