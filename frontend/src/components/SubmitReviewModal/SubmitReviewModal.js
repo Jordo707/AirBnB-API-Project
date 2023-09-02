@@ -13,7 +13,7 @@ const ReviewModal = ({ spotId, onClose }) => {
   const user = useSelector(state => state.session.user)
 //   console.log(object)
 
-  console.log("=---------------------landed-----------")
+//   console.log("=---------------------landed-----------")
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -25,10 +25,10 @@ const ReviewModal = ({ spotId, onClose }) => {
     // Submit the review
     const response = await dispatch(reviewActions.submitReview(spotId, review, stars, user));
 
-    console.log("response, ",response)
+    // console.log("response, ",response)
 
     if (response.id) {
-        console.log("made it to the response.id")
+        // console.log("made it to the response.id")
         await(dispatch(spotActions.getSpotDetails(spotId)))
     }
 

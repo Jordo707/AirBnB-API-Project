@@ -21,7 +21,7 @@ const SpotDetails = () => {
 
     // console.log(`Spot: `, spot)
     // console.log("userId: ", userId)
-    console.log('Reviews ',reviews)
+    // console.log('Reviews ',reviews)
     // console.log("spotOwnerId", spotOwnerId)
     // console.log("You are the spot owner:", spotOwnerId === userId)
 
