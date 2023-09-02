@@ -13,7 +13,7 @@ const ReviewModal = ({ spotId, onClose }) => {
   const user = useSelector(state => state.session.user)
 //   console.log(object)
 
-  console.log("=---------------------landed-----------")
+//   console.log("=---------------------landed-----------")
 
   const handleSubmit = async (e) => {
     e.preventDefault()

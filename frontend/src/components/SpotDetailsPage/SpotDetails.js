@@ -5,12 +5,14 @@ import * as spotActions from "../../store/spot";
 import * as reviewActions from '../../store/reviews'
 import "./SpotDetails.css";
 import ReviewModal from "../SubmitReviewModal/SubmitReviewModal";
+import DeleteReviewModal from "../DeleteReviewModal/DeleteReviewModal";
 
 const SpotDetails = () => {
     const dispatch = useDispatch();
     const { spotId } = useParams();
 
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const [reviewToDelete, setReviewToDelete] = useState(null);
 
 
     const spot = useSelector(state => state.spots.singleSpot);
@@ -24,6 +26,11 @@ const SpotDetails = () => {
     console.log('Reviews ',reviews)
     // console.log("spotOwnerId", spotOwnerId)
     // console.log("You are the spot owner:", spotOwnerId === userId)
+
+    const handleDeleteReview = (reviewId) => {
+        setReviewToDelete(reviewId);
+        // Open the deletion confirmation modal
+    };
 
     // Conditionally render the submit review button
     const renderSubmitReviewButton = () => {
@@ -133,10 +140,11 @@ const SpotDetails = () => {
                                 const month = createdAtDate.toLocaleString('default', { month: 'long' });
                                 const year = createdAtDate.getFullYear();
                                 const formattedDate = `${month} ${year}`;
+                                console.log("Rendering Review:",review)
 
                                 return (
 
-                                    <div className="review-card" key={review.id}>
+                                <div className="review-card" key={review.reviewData.id}>
                                     <div className="review-owner">
                                         {review.User.firstName}
                                     </div>
@@ -146,6 +154,21 @@ const SpotDetails = () => {
                                     <div className="review-content">
                                         {review.reviewData.review}
                                     </div>
+                                    {userId === review.User.id && (
+                                        <>
+                                        <button onClick={() => handleDeleteReview(review.reviewData.id)}>Delete</button>
+                                        <DeleteReviewModal
+                                            isOpen={reviewToDelete === review.reviewData.id}
+                                            onCancel={() => setReviewToDelete(null)}
+                                            onConfirm={() => {
+                                                dispatch(reviewActions.deleteUserReview(review.reviewData.id));
+                                                console.log('reviewToDelete: ', review.reviewData.id)
+                                                dispatch(spotActions.getSpotDetails(spotId))
+                                                setReviewToDelete(null);
+                                            }}
+                                        />
+                                        </>
+                                    )}
                                 </div>
                                 )
                             })}
