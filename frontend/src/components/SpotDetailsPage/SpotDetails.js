@@ -21,6 +21,13 @@ const SpotDetails = () => {
     const reviewObject = useSelector(state => state.reviews.spot);
     const reviews = Object.values(reviewObject)
 
+    // Convert avgNumStars to a number using parseFloat
+    const avgNumStars = parseFloat(spot.avgNumStars);
+
+    // Check if avgNumStars is a valid number, if not, set it to "New"
+    const formattedAvgNumStars = isNaN(avgNumStars) ? "New" : avgNumStars.toFixed(1);
+
+
     // console.log(`Spot: `, spot)
     // console.log("userId: ", userId)
     // console.log('Reviews ',reviews)
@@ -29,22 +36,18 @@ const SpotDetails = () => {
 
     const handleDeleteReview = (reviewId) => {
         setReviewToDelete(reviewId);
-        // Open the deletion confirmation modal
     };
 
     // Conditionally render the submit review button
     const renderSubmitReviewButton = () => {
-        // ensure there is a user logged in
         if(!userId) {
             return null
         }
 
-        // ensure the current user isn't the owner
         if(userId && userId === spotOwnerId) {
             return null
         }
 
-        // ensure the current user hasn't already submitted a review
         if (userId && reviews.some(review => review?.User?.id === userId)) {
             return null;
         }
@@ -114,7 +117,7 @@ const SpotDetails = () => {
                                 ${spot.price}
                             </div>
                             <div className="review-score">
-                                {typeof spot.avgNumStars === 'number' ? spot.avgNumStars.toFixed(1) : "new"}
+                                {formattedAvgNumStars}
                             </div>
                             <div className="num-reviews">
                                 {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
@@ -127,7 +130,7 @@ const SpotDetails = () => {
                 <div className="review-container">
                     <div className="review-header">
                         <div className="star-rating">
-                        {typeof spot.avgNumStars === 'number' ? spot.avgNumStars.toFixed(1) : "new"}
+                            {formattedAvgNumStars}
                         </div>
                         <div className="number-reviews">
                             {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
