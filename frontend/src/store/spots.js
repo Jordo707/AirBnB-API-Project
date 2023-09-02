@@ -41,6 +41,10 @@ export const resetSingleSpotAction = () => ({
   type: RESET_SPOT
 })
 
+export const deleteUserSpotAction = (spotId) => ({
+  type: DELETE_USER_SPOT,
+  spotId,
+});
 // Thunks
 export const getSpotDetails = (id) => async (dispatch) => {
   console.log(`id: ${id}`);
@@ -130,10 +134,6 @@ export const getAllSpots = () => async (dispatch) => {
   } else console.log("error, could not fetch spots")
 };
 
-export const deleteUserSpotAction = (spotId) => ({
-  type: DELETE_USER_SPOT,
-  spotId,
-});
 
 export const deleteUserSpot = (spotId) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${spotId}`, {
