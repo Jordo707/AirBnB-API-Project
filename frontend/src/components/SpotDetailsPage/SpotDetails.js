@@ -120,7 +120,7 @@ const SpotDetails = () => {
                                 {formattedAvgNumStars}
                             </div>
                             <div className="num-reviews">
-                                {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                                {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
                             </div>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ const SpotDetails = () => {
                             {formattedAvgNumStars}
                         </div>
                         <div className="number-reviews">
-                            {spot.numReviews === 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                            {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
                         </div>
                     </div>
                     {renderSubmitReviewButton()}
