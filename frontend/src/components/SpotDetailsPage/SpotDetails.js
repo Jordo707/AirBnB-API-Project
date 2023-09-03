@@ -32,7 +32,7 @@ const SpotDetails = () => {
     const avgNumStars = parseFloat(spot.avgNumStars);
 
     // Check if avgNumStars is a valid number, if not, set it to "New"
-    const formattedAvgNumStars = isNaN(avgNumStars) ? "★ New" : `★ ${avgNumStars.toFixed(1)} ·`;
+    const formattedAvgNumStars = isNaN(avgNumStars) ? "★ New" : `★ · ${avgNumStars.toFixed(1)}`;
 
 
     // console.log(`Spot: `, spot)
@@ -125,11 +125,15 @@ const SpotDetails = () => {
                             <div className="price">
                                 <b>${spot.price}</b> night
                             </div>
-                            <div className="review-score">
-                                {formattedAvgNumStars}
-                            </div>
-                            <div className="num-reviews">
-                                {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                            <div className="review-line">
+                                <div className="review-score">
+                                    {formattedAvgNumStars}
+                                </div>
+                                {reviews.length > 0 && (
+                                <div className="num-reviews">
+                                    {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                                </div>
+                                )}
                             </div>
                         </div>
                             <button onClick={() => alert("Feature coming soon")}>Reserve</button>
@@ -140,13 +144,15 @@ const SpotDetails = () => {
                 </div>
                 <div className="review-container">
                     <div className="review-header">
-                    <div className="star-rating">{formattedAvgNumStars}</div>
-                    {reviews.length > 0 && (
-                    <div className="number-reviews">
-                        {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
-                    </div>
-                    )}
-                    </div>
+                        <div className="review-slot">
+                            <div className="star-rating">{formattedAvgNumStars}</div>
+                            {reviews.length > 0 && (
+                            <div className="number-reviews">
+                                {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                            </div>
+                            )}
+                            </div>
+                        </div>
                     {renderSubmitReviewButton()}
                     <div className="user-reviews">
                     {reviews.length === 0 && userId && userId !== spotOwnerId? (
