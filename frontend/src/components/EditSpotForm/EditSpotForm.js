@@ -9,12 +9,13 @@ const EditSpotForm = () => {
     const history = useHistory();
     const { spotId } = useParams();
     const spot = useSelector(state => state.spots.singleSpot);
-    const currentUserId = useSelector(state => state.session.user.id)
-    const currentUserName = useSelector(state => state.session.user.firstName)
+    // const currentUserId = useSelector(state => state.session.user.id)
+    // const currentUserName = useSelector(state => state.session.user.firstName)
     const spotOwnerId = spot.ownerId
+    const currentUser = useSelector(state => state.session.user)
 
     console.log("Spot, ",spot)
-    console.log("You are the spot owner: ", spotOwnerId === currentUserId)
+    // console.log("You are the spot owner: ", spotOwnerId === currentUserId)
 
 
     const [address, setAddress] = useState("");
@@ -31,6 +32,15 @@ const EditSpotForm = () => {
         if (!spot.id || spot.id !== +spotId) {
             dispatch(spotActions.getSpotDetails(spotId));
         } else {
+
+            if (currentUser && currentUser.id !== spot.ownerId || currentUser === null) {
+                // Display an alert to the user
+                alert("You're not supposed to be here, how'd you even get to this page?");
+
+                // Redirect the user to the landing page or any other appropriate URL
+                history.push("/");
+            }
+
             setAddress(spot.address);
             setCity(spot.city);
             setState(spot.state);
@@ -121,14 +131,6 @@ const EditSpotForm = () => {
         newImageUrls[index] = value;
         setImageUrls(newImageUrls);
     };
-
-    // Kick out anyone who doesn't own the spot
-    if (currentUserId !== spotOwnerId) {
-        alert(`You're not supposed to be in here, ${currentUserName}`)
-
-        history.push('/')
-    }
-
 
     return (
         <div>
