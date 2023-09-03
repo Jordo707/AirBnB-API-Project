@@ -17,6 +17,9 @@ const NewSpotForm = () => {
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [imageUrls, setImageUrls] = useState(["", "", "", "", ""]);
+    const [errors,setErrors] = useState({});
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
