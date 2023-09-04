@@ -32,7 +32,7 @@ const SpotDetails = () => {
     const avgNumStars = parseFloat(spot.avgNumStars);
 
     // Check if avgNumStars is a valid number, if not, set it to "New"
-    const formattedAvgNumStars = isNaN(avgNumStars) ? "★ New" : `★ · ${avgNumStars.toFixed(1)}`;
+    const formattedAvgNumStars = isNaN(avgNumStars) ? "★New" : `★·${avgNumStars.toFixed(1)}`;
 
 
     // console.log(`Spot: `, spot)
@@ -63,7 +63,7 @@ const SpotDetails = () => {
         return (
             <>
             <div className="review-button">
-                <button onClick={openReviewModal}>Submit a review</button>
+                <button className="submit-review-button" onClick={openReviewModal}>Submit a review</button>
             </div>
             {reviewModalOpen && (
                 <ReviewModal spotId={spotId} onClose={closeReviewModal} />
@@ -131,17 +131,15 @@ const SpotDetails = () => {
                                 </div>
                                 {reviews.length > 0 && (
                                 <div className="num-reviews">
-                                    {spot.numReviews == 1 ? `${spot.numReviews} review` : `${spot.numReviews} reviews`}
+                                    {spot.numReviews == 1 ? ` ${spot.numReviews} review` : ` ${spot.numReviews} reviews`}
                                 </div>
                                 )}
                             </div>
                         </div>
-                            <button onClick={() => alert("Feature coming soon")}>Reserve</button>
+                            <button className="reserve-button" onClick={() => alert("Feature coming soon")}>Reserve</button>
                     </div>
                 </div>
-                <div className="dividing-line">
-                            -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                </div>
+
                 <div className="review-container">
                     <div className="review-header">
                         <div className="review-slot">
@@ -173,7 +171,7 @@ const SpotDetails = () => {
                             <div className="review-content">{review.reviewData.review}</div>
                             {userId === review.User.id && (
                                 <>
-                                <button onClick={() => handleDeleteReview(review.reviewData.id)}>Delete</button>
+                                <button className="delete-button" onClick={() => handleDeleteReview(review.reviewData.id)}>Delete</button>
                                 <DeleteReviewModal
                                     isOpen={reviewToDelete === review.reviewData.id}
                                     onCancel={() => setReviewToDelete(null)}
