@@ -45,10 +45,10 @@
 }
 
 .button-container button:nth-child(2) {
-    background-color: #ff4747;
+    background-color: #f56161;
     color: #fff;
 }
 .button-container button:nth-child(2) :hover {
-    background-color: #f51212;
+    background-color: #fc0000;
 
 }

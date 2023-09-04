@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import * as spotActions from "../../store/spot";
+import '../NewSpotForm/NewSpotForm.css'
 
 const EditSpotForm = () => {
     const dispatch = useDispatch();
@@ -133,7 +134,7 @@ const EditSpotForm = () => {
     };
 
     return (
-        <div>
+        <div className="form-container">
             <h2>Edit Spot</h2>
             <form onSubmit={handleSubmit}>
             <h3>Where's Your place located?</h3>

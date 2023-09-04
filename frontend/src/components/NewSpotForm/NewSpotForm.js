@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as spotActions from "../../store/spot";
+import './NewSpotForm.css'
 
 const defaultImageUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSo0nwDRO1dYTQIhm9Sz8sA20Wqk8xaiNyhQg&usqp=CAU";
 
@@ -115,7 +116,7 @@ const NewSpotForm = () => {
     };
 
     return (
-        <div>
+        <div className="form-container">
             <h2>Create a New Spot</h2>
             <form onSubmit={handleSubmit}>
             <h3>Where's Your place located?</h3>
@@ -188,7 +189,7 @@ const NewSpotForm = () => {
                             value={imageUrls[0]}
                             onChange={(e) => handleImageUrlChange(0, e.target.value)}
                         />
-                        {errors.imageUrls && errors.imageUrls[0] && <p>{errors.imageUrls[0]}</p>}
+                        {errors.imageUrls && errors.imageUrls[0] && <p className="error">{errors.imageUrls[0]}</p>}
                     </div>
                     <div>
                         <input
@@ -197,7 +198,7 @@ const NewSpotForm = () => {
                             value={imageUrls[1]}
                             onChange={(e) => handleImageUrlChange(1, e.target.value)}
                         />
-                        {errors.imageUrls && errors.imageUrls[1] && <p>{errors.imageUrls[1]}</p>}
+                        {errors.imageUrls && errors.imageUrls[1] && <p className="error">{errors.imageUrls[1]}</p>}
                     </div>
                     <div>
                         <input
@@ -206,7 +207,7 @@ const NewSpotForm = () => {
                             value={imageUrls[2]}
                             onChange={(e) => handleImageUrlChange(2, e.target.value)}
                         />
-                        {errors.imageUrls && errors.imageUrls[2] && <p>{errors.imageUrls[2]}</p>}
+                        {errors.imageUrls && errors.imageUrls[2] && <p className="error">{errors.imageUrls[2]}</p>}
                     </div>
                     <div>
                         <input
@@ -215,7 +216,7 @@ const NewSpotForm = () => {
                             value={imageUrls[3]}
                             onChange={(e) => handleImageUrlChange(3, e.target.value)}
                         />
-                        {errors.imageUrls && errors.imageUrls[3] && <p>{errors.imageUrls[3]}</p>}
+                        {errors.imageUrls && errors.imageUrls[3] && <p className="error">{errors.imageUrls[3]}</p>}
                     </div>
                     <div>
                         <input
@@ -224,7 +225,7 @@ const NewSpotForm = () => {
                             value={imageUrls[4]}
                             onChange={(e) => handleImageUrlChange(4, e.target.value)}
                         />
-                        {errors.imageUrls && errors.imageUrls[4] && <p>{errors.imageUrls[4]}</p>}
+                        {errors.imageUrls && errors.imageUrls[4] && <p className="error">{errors.imageUrls[4]}</p>}
                     </div>
                 <button type="submit">Create Spot</button>
             </form>
