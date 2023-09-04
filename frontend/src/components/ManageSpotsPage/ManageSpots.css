@@ -1,0 +1,37 @@
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.edit-button,
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.edit-button {
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+}
+
+.edit-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.delete-spot-button {
+    background-color: #d93949;
+    color: #ffffff;
+}
+
+button:hover {
+    background-color: #911320;
+    color: #fff;
+}
