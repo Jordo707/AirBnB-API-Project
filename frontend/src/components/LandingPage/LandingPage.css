@@ -1,6 +1,6 @@
 .spot-list {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr)); /* Four columns */
+    grid-template-columns: repeat(4, minmax(0, 1fr)); 
     gap: 20px;
     padding: 20px;
     border: 2px, solid, red;
@@ -13,6 +13,13 @@
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease-in-out;
+    text-decoration: none;
+    color: black;
+}
+
+.spot-card * {
+    color: inherit;
+    text-decoration: inherit;
 }
 
 .spot-card-row {
@@ -22,6 +29,7 @@
 
 .spot-card:hover {
     transform: translateY(-5px);
+    text-decoration: none;
 }
 
 .spot-card img {
