@@ -5,11 +5,13 @@ import * as reviewActions from "../../store/reviews"
 import * as spotActions from "../../store/spots"
 import './SubmitReviewModal.css'
 import { useSelector } from "react-redux";
+import { useModal } from "../../context/Modal";
 
 const ReviewModal = ({ spotId, onClose }) => {
     const dispatch = useDispatch();
   const [review, setReview] = useState('');
   const [stars, setStars] = useState(0);
+
   const user = useSelector(state => state.session.user)
 //   console.log(object)
 
@@ -25,10 +27,12 @@ const ReviewModal = ({ spotId, onClose }) => {
     // Submit the review
     const response = await dispatch(reviewActions.submitReview(spotId, review, stars, user));
 
-    console.log("response, ",response)
+
+
+    // console.log("response, ",response)
 
     if (response.id) {
-        console.log("made it to the response.id")
+        // console.log("made it to the response.id")
         await(dispatch(spotActions.getSpotDetails(spotId)))
     }
 

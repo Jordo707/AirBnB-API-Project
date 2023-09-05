@@ -1,8 +1,12 @@
+
 .spot-details {
     max-width: 1000px;
+    margin: 50 auto;
+    padding: 20px;
+    border: 1px solid grey;
+    border-radius: 25px;
     justify-content: center;
     align-items: center;
-
 }
 
 .image-list {
@@ -18,18 +22,155 @@
 .additional-images {
     width: 50%;
     flex: 1 0 auto;
+    height: 100%;
 }
 
 .spot-image-preview img,
 .additional-images img {
     width: 100%;
-    height: 100%;
     object-fit: cover;
+    border-radius: 5px;
 }
 
 .additional-images {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
     gap: 10px;
+}
+
+.additional-images img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.review-line {
+    display: flex;
+    align-items: center;
+}
+
+.review-score {
+    margin-right: 10px;
+}
+
+.num-reviews {
+    align-items: baseline;
+    display: flex;
+}
+
+.reserve-box {
+    flex:1;
+    border: 3px solid black;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+}
+
+.reserve-box-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+.spot-info {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.spot-writeup {
+    flex:2;
+    padding-right: 20px;
+}
+
+.review-card {
+    background-color: rgb(255, 240, 240);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    color: rgb(105, 96, 96);
+}
+
+.review-slot {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+}
+
+.star-rating {
+    margin-right:  10px;
+}
+
+.number-reviews {
+    display: flex;
+    align-items: baseline;
+}
+
+.review-date {
+    font-style: italic;
+}
+
+.review-card .review-content {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+
+.review-card .review-owner {
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+}
+
+
+.reserve-button {
+    background-color: #ff6262;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.reserve-button:hover {
+    background-color: #ff1919;
+}
+
+.submit-review-button {
+    background-color: #ff6262;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.submit-review-button:hover {
+    background-color: #ff1919;
+}
+
+.delete-button {
+    background-color: #ff6262;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.delete-button:hover {
+    background-color: #ff1919;
 }
