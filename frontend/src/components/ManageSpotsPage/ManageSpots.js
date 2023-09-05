@@ -71,11 +71,12 @@ const UserSpotList = () => {
                                          {`${spot.city}, ${spot.state}`}
                                      </div>
                                      <div className="spot-card-rating">
+                                     ★
                                      {typeof spot.avgRating === 'string' ?
                                         parseFloat(spot.avgRating).toFixed(1) :
                                         typeof spot.avgRating === 'number' ?
-                                        `★ ${spot.avgRating.toFixed(1)}` :
-                                        '★ New'
+                                        `${spot.avgRating.toFixed(1)}` :
+                                        'New'
                                       }
                                      </div>
                                  </div>
@@ -88,7 +89,7 @@ const UserSpotList = () => {
                   </Link>
                   <div className="card-footer">
                     <Link to={`/spots/${spot.id}/edit`} className="edit-button">
-                        Edit
+                        Update
                     </Link>
                     <button className="delete-spot-button" onClick={() => handleDeleteClick(spot.id)}>Delete</button>
                   </div>

@@ -174,25 +174,28 @@ const EditSpotForm = () => {
                     />
             <h3>Describe your place to guests</h3>
                 <label>Tell Us About Your Place:</label>
-                <p>Be sure to highlight all the best parts of your spot and the local area around it. Let everyone know why it's a great place to stay.</p>
+                <p>Mention the best features of your space, any special amentities like
+                    fast wifi or parking, and what you love about the neighborhood.</p>
                 {errors.description && <p className="error">{errors.description}</p>}
-                <input
-                    type="text"
-                    placeholder="Tell us about your spot"
+                <textarea
+                    placeholder="Please write at least 30 characters"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    />
-                <label>Give Your Place a Name:</label>
+                    rows={5}
+                    className="description-textarea"
+                ></textarea>
+                <h3>Give Your Place a Name:</h3>
                 {errors.name && <p className="error">{errors.name}</p>}
-                <p></p>
+                <p>Catch guests' attention with a spot title that highlights what makes
+                    your place special.</p>
                 <input
                     type="text"
                     placeholder="Name your spot"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     />
-                <label>What is the Nightly Price You'd Like to Set?:</label>
-                <p>Competative pricing will help your spot stand out.</p>
+                <h3>Set a base price for your spot</h3>
+                <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
                 {errors.price && <p className="error">{errors.price}</p>}
                 <input
                     type="text"
@@ -214,7 +217,7 @@ const EditSpotForm = () => {
                     <div>
                         <input
                             type="text"
-                            placeholder="Image URL 2"
+                            placeholder="Image URL"
                             value={imageUrls[1]}
                             onChange={(e) => handleImageUrlChange(1, e.target.value)}
                         />
@@ -223,7 +226,7 @@ const EditSpotForm = () => {
                     <div>
                         <input
                             type="text"
-                            placeholder="Image URL 3"
+                            placeholder="Image URL"
                             value={imageUrls[2]}
                             onChange={(e) => handleImageUrlChange(2, e.target.value)}
                         />
@@ -232,7 +235,7 @@ const EditSpotForm = () => {
                     <div>
                         <input
                             type="text"
-                            placeholder="Image URL 4"
+                            placeholder="Image URL"
                             value={imageUrls[3]}
                             onChange={(e) => handleImageUrlChange(3, e.target.value)}
                         />
@@ -241,7 +244,7 @@ const EditSpotForm = () => {
                     <div>
                         <input
                             type="text"
-                            placeholder="Image URL 5"
+                            placeholder="Image URL"
                             value={imageUrls[4]}
                             onChange={(e) => handleImageUrlChange(4, e.target.value)}
                         />

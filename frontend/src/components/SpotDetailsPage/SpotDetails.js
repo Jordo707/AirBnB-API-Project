@@ -32,7 +32,7 @@ const SpotDetails = () => {
     const avgNumStars = parseFloat(spot.avgNumStars);
 
     // Check if avgNumStars is a valid number, if not, set it to "New"
-    const formattedAvgNumStars = isNaN(avgNumStars) ? "★New" : `★·${avgNumStars.toFixed(1)}`;
+    const formattedAvgNumStars = isNaN(avgNumStars) ? "★New" : `★${avgNumStars.toFixed(1)} ·`;
 
 
     // console.log(`Spot: `, spot)
@@ -63,7 +63,7 @@ const SpotDetails = () => {
         return (
             <>
             <div className="review-button">
-                <button className="submit-review-button" onClick={openReviewModal}>Submit a review</button>
+                <button className="submit-review-button" onClick={openReviewModal}>Post Your Review</button>
             </div>
             {reviewModalOpen && (
                 <ReviewModal spotId={spotId} onClose={closeReviewModal} />

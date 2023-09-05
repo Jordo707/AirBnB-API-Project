@@ -24,6 +24,7 @@ const StarRating = ({ totalStars, rating, onRatingChange }) => {
           </span>
         );
       })}
+       Stars
     </div>
   );
 };
