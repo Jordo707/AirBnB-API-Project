@@ -20,7 +20,6 @@ const ReviewModal = ({ spotId, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (review.length < 10 || stars === 0) {
-      // Handle validation (e.g., show an error message)
       return;
     }
 
@@ -37,7 +36,6 @@ const ReviewModal = ({ spotId, onClose }) => {
     }
 
 
-    // Close the modal
     onClose();
   };
 

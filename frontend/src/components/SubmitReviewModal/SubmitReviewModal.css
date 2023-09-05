@@ -1,5 +1,4 @@
 .modal-background {
-    /* Background overlay styles */
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +12,6 @@
   }
 
   .modal-content {
-    /* Modal content styles */
     background-color: white;
     padding: 20px;
     border-radius: 8px;

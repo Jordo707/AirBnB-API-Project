@@ -46,8 +46,8 @@
     display: block;
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #007bff; /* Blue color, you can change this */
-    color: #fff; /* White text color */
+    background-color: #007bff;
+    color: #fff;
     border: none;
     border-radius: 5px;
     font-size: 1rem;
@@ -56,7 +56,7 @@
 }
 
 .form-container button[type="submit"]:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3; 
     color: #fff;
 }
 
